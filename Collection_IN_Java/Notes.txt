@@ -1,0 +1,93 @@
+✅ 1. Collection API (BIG umbrella)
+
+Meaning:
+➡️ The entire framework of interfaces + classes + algorithms used to store and process data.
+
+Includes:
+
+Interfaces (List, Set, Map, Queue…)
+
+Classes (ArrayList, HashSet, HashMap…)
+
+Utility classes (Collections class)
+
+Algorithms (sorting, searching, etc.)
+
+Package: java.util.*
+
+Short meaning:
+✔ Collection API = Whole collection framework.
+
+✅ 2. Collection (Interface)
+
+Meaning:
+➡️ The parent interface of List, Set, and Queue.
+
+public interface Collection<E>
+
+
+Everything except Map comes under this.
+
+Short meaning:
+✔ Collection = Top-level interface for groups of objects.
+
+✅ 3. Collections (Utility Class)
+
+Meaning:
+➡️ A class of static methods like:
+
+sort()
+
+reverse()
+
+shuffle()
+
+min()
+
+max()
+
+Short meaning:
+✔ Collections = Helper class with utility methods for collections.
+
+Example:
+
+Collections.sort(list);
+
+💥 FINAL SHORT DIFFERENCE
+Term	Type	Meaning
+Collection API	Framework	Whole Java collection system
+Collection	Interface	Parent of List, Set, Queue
+Collections	Class	Utility class with static methods
+📚 ALL COLLECTION TYPES IN JAVA (SHORT LIST)
+🔹 1. List Interface (Ordered, duplicates allowed)
+Class	Description
+ArrayList	Fast, dynamic array
+LinkedList	Doubly linked list
+Vector	Synchronized array list
+Stack	LIFO stack
+🔹 2. Set Interface (No duplicates)
+Class	Description
+HashSet	Fast, no order
+LinkedHashSet	Insertion order
+TreeSet	Sorted set
+🔹 3. Queue Interface
+Class	Description
+PriorityQueue	Min-heap, priority order
+ArrayDeque	Fast double-ended queue
+🔹 4. Map Interface (Key–Value pairs)
+
+(Not part of Collection interface, but part of Collection API)
+
+Class	Description
+HashMap	Fast, no order
+LinkedHashMap	Insertion order
+TreeMap	Sorted map
+Hashtable	Synchronized
+Properties	Key-value strings
+⭐ Super-Short Summary (One-liners)
+
+Collection API → Whole Java data structure framework.
+
+Collection → Parent interface of List, Set, Queue.
+
+Collections → Utility class with helpers like sort(), reverse().

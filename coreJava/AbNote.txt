@@ -1,0 +1,43 @@
+by default every class extends by Object class
+by default every file imports java.lang.* [package];
+
+Does the main() method be overloaded in Java?
+-->yes
+Yes, the main() method can be overloaded in Java because you can have multiple versions of it with different parameter lists, which allows for flexibility and customization in how the program is executed. This aligns with the concept of method overloading in Java, demonstrating your understanding of its functionality.
+
+Question 5:
+What will be printed after the execution of the given code?
+
+class Message{
+
+public void printMessage(int message) {
+
+System.out.println("Message primitive: " + message);
+
+}
+
+
+
+public void printMessage(Integer message) {
+
+System.out.println("Message object: " + message);
+
+}
+
+}
+
+
+
+class Main{
+
+public static void main(String []ars){
+
+Message ob=new Message();
+
+ob.printMessage(5);
+
+}
+
+}
+
+--> Your selection of "Message primitive: 5" is correct because in the provided code, the method printMessage(int message) is called with an integer argument, which matches the method signature for handling primitive types, thus it prints "Message primitive: 5". This illustrates your understanding of method overloading and type matching in Java.

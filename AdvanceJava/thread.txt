@@ -1,0 +1,323 @@
+✅ 3. Thread Methods in Simple Language
+3.1 thread.join()
+
+Meaning:
+
+“Wait for this thread to finish, then continue.”
+
+Example:
+
+t1.start();
+t1.join();  // main waits for t1
+
+3.2 Thread.sleep(ms)
+
+Meaning:
+
+“Pause this thread for some time.”
+
+It does NOT release locks.
+
+3.3 wait()
+
+Meaning:
+
+“Pause the thread until someone calls notify().
+Release the lock.”
+
+Must be used inside synchronized.
+
+3.4 notify()
+
+Meaning:
+
+“Wake up ONE thread that is waiting.”
+
+Must be used inside synchronized.
+
+3.5 notifyAll()
+
+Meaning:
+
+“Wake up ALL waiting threads.”
+
+3.6 thread.isAlive() (maybe you meant dead()?)
+
+There is NO method called dead() in Java.
+
+But you can check:
+
+t.isAlive();
+
+✅ 1. What is thread.isAlive()?
+
+isAlive() is a method of the Thread class.
+
+✔ Meaning:
+
+Returns true if the thread has started and has not yet finished.
+
+✔ When is it true?
+Stage	isAlive()
+Before start()	false
+After start()	true
+While running	true
+After run() finishes	false
+✔ Example:
+Thread t = new Thread(() -> {
+    System.out.println("Running...");
+});
+
+System.out.println(t.isAlive()); // false (not started)
+
+t.start();
+
+System.out.println(t.isAlive()); // true (running)
+
+t.join();   // main waits
+
+System.out.println(t.isAlive()); // false (completed)
+
+🚨 2. Does sleep() take parameters?
+
+Yes.
+
+sleep takes milliseconds:
+Thread.sleep(1000);   // sleep 1 second
+
+✔ Optional version:
+Thread.sleep(1000, 500);  // 1000 ms + 500 nanoseconds
+
+✔ sleep() does NOT release the lock.
+✔ sleep() does NOT need notify().
+❓ 3. Do wait() and notify() take parameters?
+✔ wait() — 3 versions
+1️⃣ wait()
+
+Waits indefinitely until notified.
+
+obj.wait();
+
+2️⃣ wait(long timeout)
+
+Waits for a maximum time.
+
+obj.wait(1000);  // wait 1 second (if no notify, wakes automatically)
+
+3️⃣ wait(long timeout, int nanos)
+
+High precision waiting.
+
+obj.wait(1000, 500);
+
+✔ notify() — no parameters
+obj.notify();
+
+
+Wakes ONE waiting thread.
+
+✔ notifyAll() — no parameters
+obj.notifyAll();
+
+
+Wakes ALL waiting threads.
+
+🔥 KEY DIFFERENCE SUMMARY
+Method	Needs lock?	Releases lock?	Has Parameters?	Used For?
+sleep()	❌ No	❌ No	✔ Yes (time)	Pause thread
+wait()	✔ Yes	✔ Yes	✔ Yes	Thread communication
+notify()	✔ Yes	❌ No	❌ No	Wake 1 waiter
+notifyAll()	✔ Yes	❌ No	❌ No	Wake all waiters
+
+
+thread
+👉 If I use sleep(), do I need notify()?
+
+NO.
+sleep() will wake up automatically after the time ends.
+No thread needs to notify it.
+
+👉 Why do I need notify() when using wait()?
+
+Because wait() means:
+
+“I am stopping myself. Someone else must wake me up.”
+
+Example:
+
+wait();     // thread waits
+notify();   // another thread wakes it
+
+
+If no one calls notify(), the waiting thread will wait forever → deadlock.
+
+✅ 4. What is synchronized? Why do we use it?
+Meaning:
+
+synchronized ensures that only one thread at a time can access a block of code.
+
+Used to prevent race conditions (multiple threads modifying the same data at the same time).
+
+🔥 Simple Explanation
+
+Without synchronization:
+
+Two people write on the same notebook → messy, incorrect.
+
+With synchronization:
+
+One person writes → finishes → next person writes.
+
+⭐ When to use synchronized?
+
+Use it when:
+
+Multiple threads access shared data
+
+Shared data must not be corrupted
+
+You want thread safety
+
+Example:
+
+public synchronized void deposit(int amount) {
+    balance += amount;
+}
+
+
+Only ONE thread can call deposit() at a time.
+
+
+********************************************************************
+🧵 1. NEW
+
+Thread object is created but not started.
+
+Thread t = new Thread();
+
+
+State → NEW
+
+🏃 2. RUNNABLE (Ready OR Running)
+
+When you call:
+
+t.start();
+
+
+Thread becomes RUNNABLE.
+
+Important:
+
+RUNNABLE means:
+
+Thread is ready to run OR
+
+Thread is running on CPU
+
+Java does not separate “ready” and “running” states.
+
+🚧 3. BLOCKED
+
+Thread enters BLOCKED state when:
+
+It tries to enter a synchronized block/method
+
+But another thread is still holding the lock
+
+Example:
+
+synchronized(obj) {  // thread 1 inside
+    // thread 2 tries to enter → BLOCKED
+}
+
+
+State → BLOCKED until lock is free
+
+⏳ 4. WAITING
+
+Thread waits forever (until another thread signals it).
+
+Thread enters WAITING when it calls:
+
+wait()
+
+join() (waiting for thread to finish)
+
+park() (LockSupport)
+
+Example:
+
+obj.wait();   // waits until notify()
+
+
+Requires synchronized block.
+
+⏳ 5. TIMED_WAITING
+
+Thread waits for a specific time.
+
+Enters TIMED_WAITING when using:
+
+sleep(1000)
+
+wait(1000)
+
+join(2000)
+
+parkNanos(), parkUntil()
+
+Example:
+
+Thread.sleep(1000);  // 1 sec
+
+🔚 6. TERMINATED
+
+Thread finishes execution.
+
+Thread reaches TERMINATED when:
+
+run() method completes
+
+OR an uncaught exception occurs
+
+Check using:
+
+t.isAlive();   // false when TERMINATED
+
+⭐ COMPLETE THREAD STATE TRANSITION FLOW (Simple)
+         NEW
+          |
+          v
+       START()
+          |
+          v
+      RUNNABLE
+   /      |      \
+ BLOCKED WAITING TIMED_WAITING
+   \      |      /
+        RUNNABLE
+          |
+          v
+     TERMINATED
+
+🎯 VERY SHORT, INTERVIEW-READY DEFINITIONS
+State	Meaning
+NEW	Thread created but not started
+RUNNABLE	Ready or running
+BLOCKED	Waiting for lock
+WAITING	Waiting forever until notify()
+TIMED_WAITING	Waiting for specific time
+TERMINATED	Finished execution
+
+NEW → You created a worker
+
+RUNNABLE → Worker is ready or working
+
+BLOCKED → Worker waiting for a key to a locked room
+
+WAITING → Worker waits until someone tells him to continue
+
+TIMED_WAITING → Worker takes a timed nap
+
+TERMINATED → Worker completed job and left

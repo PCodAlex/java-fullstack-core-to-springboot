@@ -1,0 +1,25 @@
+Exception
+error-->1.compile time error 2.run time error 3.logical error(bugs)
+
+logical errors are difficult to solve or fixing the error
+
+to handle the runtime error (exceptions) we use try,catch finnaly or throws
+
+statement --> 1.normal statement
+              2.critical statement
+
+
+1.java.lang.ArithmaticException
+2.java.lang.ArrayOutOfBoundException
+3.java.lang.NullPointerException
+
+Object --> Throwable --> Exception --> RunTimeExceptiomn --> All the exception mention before 
+
+error --> 1.Thread Death 2.Virtual Machine Error 3.IO Error
+exception --> 1.Runtime Exception [ 2.Sql Exception 3.IO Exception ] -->checked Exception (it has to be handled)
+
+1.Runtime Exception (unchecked exception because it is a choice for the programmer if he wants to solve he can or not ) :
+        1.java.lang.ArithmaticException
+        2.java.lang.ArrayOutOfBoundException
+        3.java.lang.NullPointerException
+

@@ -1,0 +1,58 @@
+✅ 1. Can a subclass extend a class AND implement an interface?
+
+YES.
+
+class Child extends Parent implements MyInterface {
+}
+
+
+Java allows:
+
+Single inheritance (extend ONE class)
+
+Multiple interface implementation (implement MANY interfaces)
+
+✔ This is the most common pattern in Java.
+
+✅ 2. Why anonymous inner class creates a new .class file but lambda does NOT?
+Anonymous Inner Class
+
+When you write:
+
+Runnable r = new Runnable() {
+    public void run() { }
+};
+
+
+Java creates a new class like:
+
+OuterClass$1.class
+
+
+Because anonymous inner class = real class created at compile time.
+
+Lambda Expression
+
+When you write:
+
+Runnable r = () -> { };
+
+
+Java does NOT create a new class file.
+
+Instead, JVM uses:
+
+invokedynamic
+
+
+Which means the lambda is stored as a function, not a class.
+
+✔ Faster
+✔ No extra .class file
+✔ Modern JVM feature
+
+💡 So:
+
+Anonymous class = new class file
+
+Lambda = no class file (uses invokedynamic)

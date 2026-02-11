@@ -1,0 +1,241 @@
+import java.util.*;
+
+public class StringArrayProcessor {
+
+    // Method to reverse a string
+    static String reverseString(String str) {
+        StringBuilder reversed = new StringBuilder();
+        for (int i = str.length() - 1; i >= 0; i--) {
+            reversed.append(str.charAt(i));
+        }
+        return reversed.toString();
+    }
+
+    // Method to remove duplicate vowels
+    static String removeDuplicateVowels(String str) {
+        Set<Character> vowelSet = new HashSet<>();
+        StringBuilder result = new StringBuilder();
+
+        for (char ch : str.toCharArray()) {
+            char lower = Character.toLowerCase(ch);
+            if ("aeiou".indexOf(lower) != -1) {
+                if (!vowelSet.contains(lower)) {
+                    vowelSet.add(lower);
+                    result.append(ch);
+                }
+            } else {
+                result.append(ch);
+            }
+        }
+        return result.toString();
+    }
+
+    // Method to remove duplicate characters
+    static String removeDuplicateCharacters(String str) {
+        Set<Character> charSet = new HashSet<>();
+        StringBuilder result = new StringBuilder();
+
+        for (char ch : str.toCharArray()) {
+            if (!charSet.contains(ch)) {
+                charSet.add(ch);
+                result.append(ch);
+            }
+        }
+        return result.toString();
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter number of strings: ");
+        int n = sc.nextInt();
+        sc.nextLine(); // consume newline
+
+        String[] arr = new String[n];
+
+        for (int i = 0; i < n; i++) {
+            System.out.print("Enter string " + (i + 1) + ": ");
+            arr[i] = sc.nextLine();
+        }
+
+        System.out.println("\n--- Processing Results ---");
+
+        for (int i = 0; i < n; i++) {
+            String reversed = reverseString(arr[i]);
+            String noDuplicateVowels = removeDuplicateVowels(reversed);
+            String finalString = removeDuplicateCharacters(noDuplicateVowels);
+
+            System.out.println("\nOriginal String: " + arr[i]);
+            System.out.println("Reversed String: " + reversed);
+            System.out.println("After Removing Duplicate Vowels: " + noDuplicateVowels);
+            System.out.println("Final String: " + finalString);
+            System.out.println("Characters Left: " + finalString.length());
+        }
+
+        sc.close();
+    }
+}
+********************************************************************************************
+import java.util.Scanner;
+
+public class NumberTrianglePattern {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter number of rows: ");
+        int rows = sc.nextInt();
+
+        int num = 1;
+
+        for (int i = 1; i <= rows; i++) {
+            for (int j = 1; j <= i; j++) {
+                System.out.print(num + " ");
+                num++;
+            }
+            System.out.println();
+        }
+
+        sc.close();
+    }
+}
+**************************************************************************************
+import java.util.Scanner;
+
+public class PrimeArmstrong {
+
+    // Method to check prime number
+    static boolean isPrime(int num) {
+        if (num <= 1)
+            return false;
+
+        for (int i = 2; i <= Math.sqrt(num); i++) {
+            if (num % i == 0)
+                return false;
+        }
+        return true;
+    }
+
+    // Method to check Armstrong number
+    static boolean isArmstrong(int num) {
+        int original = num;
+        int sum = 0;
+        int digits = 0;
+        int temp = num;
+
+        // Count digits
+        while (temp > 0) {
+            digits++;
+            temp /= 10;
+        }
+
+        temp = num;
+
+        // Calculate Armstrong sum
+        while (temp > 0) {
+            int digit = temp % 10;
+            sum += Math.pow(digit, digits);
+            temp /= 10;
+        }
+
+        return sum == original;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter start range: ");
+        int start = sc.nextInt();
+
+        System.out.print("Enter end range: ");
+        int end = sc.nextInt();
+
+        System.out.println("\nPrime Armstrong numbers are:");
+
+        for (int i = start; i <= end; i++) {
+            if (isPrime(i) && isArmstrong(i)) {
+                System.out.println(i);
+            }
+        }
+
+        sc.close();
+    }
+}
+*****************************************************************************************
+import java.util.*;
+
+public class StringProcessor {
+
+    // Reverse string
+    static String reverseString(String str) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = str.length() - 1; i >= 0; i--) {
+            sb.append(str.charAt(i));
+        }
+        return sb.toString();
+    }
+
+    // Remove duplicate vowels
+    static String removeDuplicateVowels(String str) {
+        Set<Character> vowelSet = new HashSet<>();
+        StringBuilder result = new StringBuilder();
+
+        for (char ch : str.toCharArray()) {
+            char lower = Character.toLowerCase(ch);
+            if ("aeiou".indexOf(lower) != -1) {
+                if (!vowelSet.contains(lower)) {
+                    vowelSet.add(lower);
+                    result.append(ch);
+                }
+            } else {
+                result.append(ch);
+            }
+        }
+        return result.toString();
+    }
+
+    // Remove duplicate characters
+    static String removeDuplicateCharacters(String str) {
+        Set<Character> charSet = new HashSet<>();
+        StringBuilder result = new StringBuilder();
+
+        for (char ch : str.toCharArray()) {
+            if (!charSet.contains(ch)) {
+                charSet.add(ch);
+                result.append(ch);
+            }
+        }
+        return result.toString();
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter number of strings: ");
+        int n = sc.nextInt();
+        sc.nextLine(); // consume newline
+
+        String[] arr = new String[n];
+
+        for (int i = 0; i < n; i++) {
+            System.out.print("Enter string " + (i + 1) + ": ");
+            arr[i] = sc.nextLine();
+        }
+
+        System.out.println("\n--- Results ---");
+
+        for (String str : arr) {
+            String reversed = reverseString(str);
+            String noDupVowels = removeDuplicateVowels(reversed);
+            String finalString = removeDuplicateCharacters(noDupVowels);
+
+            System.out.println("\nOriginal String: " + str);
+            System.out.println("Reversed String: " + reversed);
+            System.out.println("After Removing Duplicate Vowels: " + noDupVowels);
+            System.out.println("Final String: " + finalString);
+            System.out.println("Characters Left: " + finalString.length());
+        }
+
+        sc.close();
+    }
+}

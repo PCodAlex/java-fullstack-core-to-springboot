@@ -1,0 +1,185 @@
+CHAT GPT LINK -->https://chatgpt.com/c/692adf74-45d0-8322-a58e-e127a2e3f9bc
+
+types of interface
+1.normal interface
+2.functional Interface(SAM-Single Abstract Method)
+3.Marker Interface(it is used update something in the compiler)
+
+serialization and deserialization
+
+1. Normal Interface
+
+A normal interface in Java is an interface that contains more than one abstract method.
+
+Key Points
+
+Can contain multiple abstract methods.
+
+Can contain default, static, and private methods (Java 8+).
+
+A class implementing it must implement all abstract methods.
+
+Example
+interface Animal {
+    void eat();
+    void sleep();
+}
+
+Usage
+
+Used to define a common behavior (contract) for multiple classes.
+
+2. Functional Interface (SAM – Single Abstract Method)
+
+A functional interface contains exactly one abstract method.
+Also called SAM → Single Abstract Method.
+
+Key Points
+
+Used mainly in Lambda Expressions and Streams.
+
+Can have any number of default or static methods, but only one abstract method.
+
+Annotated with @FunctionalInterface (optional but recommended).
+
+Example
+@FunctionalInterface
+interface Calculator {
+    int add(int a, int b);
+}
+
+Why Important?
+
+Basis of Lambda expressions in Java.
+
+Enables functional programming style.
+
+3. Marker Interface
+
+A marker interface is an interface that contains no methods or fields.
+
+Key Points
+
+Used to provide metadata to classes.
+
+The compiler or JVM checks whether a class implements that interface, and performs special operations.
+
+Examples of Marker Interfaces
+Marker Interface	Meaning / Usage
+Serializable	Marks object as allowed to be serialized
+Cloneable	Allows object cloning
+Remote	Used in RMI (Remote Method Invocation)
+Example
+interface MyMarker {}
+
+
+Even though it has no methods, implementing this triggers special behavior.
+
+🔄 Serialization & Deserialization (Java)
+🔹 Serialization
+
+Serialization is the process of converting an object into a byte stream so it can be:
+
+Stored in a file
+
+Sent over a network
+
+Saved into a database
+
+Implemented using
+implements Serializable
+
+Example
+import java.io.*;
+
+class Student implements Serializable {
+    int id;
+    String name;
+}
+
+public class SerializeDemo {
+    public static void main(String[] args) throws Exception {
+        Student s = new Student();
+        s.id = 1;
+        s.name = "Akash";
+
+        FileOutputStream fos = new FileOutputStream("data.txt");
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+        oos.writeObject(s);
+        oos.close();
+        fos.close();
+    }
+}
+
+🔹 Deserialization
+
+Deserialization is the process of converting the byte stream back into an object.
+
+Example
+import java.io.*;
+
+public class DeserializeDemo {
+    public static void main(String[] args) throws Exception {
+        FileInputStream fis = new FileInputStream("data.txt");
+        ObjectInputStream ois = new ObjectInputStream(fis);
+
+        Student s = (Student) ois.readObject();
+
+        System.out.println(s.id + " " + s.name);
+
+        ois.close();
+        fis.close();
+    }
+}
+
+
+1️⃣ Only classes implementing Serializable can be serialized.
+2️⃣ transient keyword
+
+Used to skip a variable during serialization.
+
+transient int password; // will not be serialized
+
+3️⃣ serialVersionUID
+
+Used to maintain object compatibility during deserialization.
+
+private static final long serialVersionUID = 1L;
+
+✅ Final Summary (Interview-Ready)
+Normal Interface
+
+Has multiple abstract methods
+
+Example: Runnable (before Java 8)
+
+Functional Interface
+
+Only one abstract method
+
+Used for Lambdas
+
+Example: Runnable, Callable, Comparator
+
+Marker Interface
+
+No methods
+
+Gives metadata to JVM
+
+Example: Serializable, Cloneable
+
+Serialization
+
+Object → Byte stream
+
+Save or transfer objects
+
+Uses Serializable interface
+
+Deserialization
+
+Byte stream → Object
+
+Requires same serialVersionUID
