@@ -1,0 +1,1041 @@
+
+*************** Hibernate important code snippet ****************
+
+Configuration cfg=new Configuration();
+cfg.addAnnotatedClass(package.name.Class_Name.Class);
+cf.configured(hibernate.cfg.xml);
+
+SessionFactory sf= cfg.buildSessionFactory();
+Session sn= sf.openSession();
+Transaction trn=sn.beginTransaction();
+
+sn.save(object) or sn.persist(object);
+
+trn.commit();
+
+sf.close();
+
+*************** hibernate.cfg.xml ***************
+
+<hibernate-configuration xmlns="http://www.hibernate.org/xsd/orm/cfg">
+<session-factory>
+	<property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+	<property name="hubernate.connnction.url">jdbc:postgresql://localhost:5432/school_db</property>
+	<property name="hibernate.connection.username">postgres</property>
+	<property name="hibnernate.connection.password">********9</property>
+	
+	<property name="hibernate.hbm2ddl.auto">update</property>
+	<property name="hibernate.show_sql">true</property>
+	<property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+</session-factory>
+</hibernate-configuration>
+
+*************** inserting data into database ***************
+
+	public static void main(String[]args) {
+		
+		Student std1=new Student();
+
+		std1.setRollNo(3);
+		std1.setsName("abhisekh");
+		std1.setsAge(25);
+		
+		Configuration cfg=new Configuration();
+		cfg.addAnnotatedClass(com.hibernate.org.HibProj.Student.class);
+		cfg.configure();
+		SessionFactory sf= cfg.buildSessionFactory();
+		Session sn=sf.openSession();
+		
+		Transaction transaction=sn.beginTransaction();
+		sn.persist(std1);
+		transaction.commit();
+		
+		System.out.println(std1);
+	}
+	
+*************** selecting data from database ***************
+
+	public static void main(String[]args) {
+		
+		Student std1=null;
+		
+		
+		Configuration cfg=new Configuration();
+		cfg.addAnnotatedClass(com.hibernate.org.HibProj.Student.class);
+		cfg.configure();
+		SessionFactory sf= cfg.buildSessionFactory();
+		Session sn=sf.openSession();
+		std1=sn.find(Student.class, 1);
+		
+		System.out.println(std1);
+	}
+	
+*************** updating data into database ***************
+
+	public static void main(String[]args) {
+		
+		Configuration cfg=new Configuration();
+		cfg.addAnnotatedClass(com.hibernate.org.HibProj.Student.class);
+		cfg.configure();
+		SessionFactory sf= cfg.buildSessionFactory();
+		Session sn=sf.openSession();
+		Student std1=sn.find(Student.class, 3);
+		std1.setsAge(22);
+		
+		Transaction trn=sn.beginTransaction();
+		
+		sn.merge(std1);
+		trn.commit();
+		
+		System.out.println(std1);
+	}
+	
+	if the object cant findout in the db [means obj=null] then it will throw a nullPointerException
+	
+	-------------or--------------
+	
+	public static void main(String[]args) {
+		Student std1=new Student();
+		std1.setRollNo(3);
+		std1.setsName("abhisekh");
+		std1.setsAge(25);
+		
+		Configuration cfg=new Configuration();
+		cfg.addAnnotatedClass(com.hibernate.org.HibProj.Student.class);
+		cfg.configure();
+		SessionFactory sf= cfg.buildSessionFactory();
+		Session sn=sf.openSession();
+		
+		Transaction trn=sn.beginTransaction();
+		
+		sn.merge(std1);
+		trn.commit();
+		
+		System.out.println(std1);
+	}
+	
+	if the object cant findout in the db [still we are passing the whole object so it is not null] then it will not throw any error
+	
+*************** delete data from database ***************
+
+	public static void main(String[]args) {
+		
+		Configuration cfg=new Configuration();
+		cfg.addAnnotatedClass(com.hibernate.org.HibProj.Student.class);
+		cfg.configure();
+		SessionFactory sf= cfg.buildSessionFactory();
+		Session sn=sf.openSession();
+		
+		Student std1=sn.find(Student.class, 5);
+		
+		Transaction trn=sn.beginTransaction();
+		
+		sn.remove(std1);
+		trn.commit();
+		
+		System.out.println(std1);
+	}
+	
+	if the object cant findout in the db [means obj=null] then it will throw a nullPointerException
+
+	-------------or--------------
+
+	public static void main(String[]args) {
+		Student std1=new Student();
+		std1.setRollNo(5);
+		std1.setsName("krish");
+		std1.setsAge(22);
+		
+		Configuration cfg=new Configuration();
+		cfg.addAnnotatedClass(com.hibernate.org.HibProj.Student.class);
+		cfg.configure();
+		SessionFactory sf= cfg.buildSessionFactory();
+		Session sn=sf.openSession();
+		
+		Transaction trn=sn.beginTransaction();
+		
+		sn.remove(std1);
+		trn.commit();
+		
+		System.out.println(std1);
+	}
+	
+	if the object cant findout in the db [still we are passing the whole object so it is not null] then it will not throw any error
+	
+*************** changing table name and column name ***************
+
+	*-*-* changes in hibernate.cfg.xml file  *-*-*
+	
+		<property name="hibernate.hbm2ddl.auto">create</property>
+		
+			switvh to create 
+	
+	Teacher.java code file:--
+		
+		package com.hibernate.org.HibProj;
+		
+		import jakarta.persistence.Column;
+		import jakarta.persistence.Entity;
+		import jakarta.persistence.Id;
+		import jakarta.persistence.Table;
+		
+		@Entity(name="techrTbl")
+		
+			--->Custom name used in HQL/JPQL queries instead of class name
+		
+		@Table(name="teacher_data_table")
+		
+			--->Sets table name in database
+		
+		public class Teacher {
+			
+			@Id
+			private int teacherId;
+			@Column(name="t_name")
+			
+				--->Sets column name in database
+			
+			private String teacherNameString;
+			
+			@Transient
+			
+				--->Field will NOT be stored in database (ignored by Hibernate)
+			
+			private int teacherSal;
+			
+			public int getTeacherId() {
+				return teacherId;
+			}
+			
+			public void setTeacherId(int teacherId) {
+				this.teacherId = teacherId;
+			}
+			
+			public String getTeacherNameString() {
+				return teacherNameString;
+			}
+			
+			public void setTeacherNameString(String teacherNameString) {
+				this.teacherNameString = teacherNameString;
+			}
+			
+			public int getTeacherSal() {
+				return teacherSal;
+			}
+			
+			public void setTeacherSal(int teacherSal) {
+				this.teacherSal = teacherSal;
+			}
+			
+			@Override
+			public String toString() {
+				return "Teacher [teacherId=" + teacherId + ", teacherNameString=" + teacherNameString + ", teacherSal="
+						+ teacherSal + "]";
+			}
+		}
+		
+	Main.java:--
+		
+		package com.hibernate.org.HibProj;
+		
+		import org.hibernate.Session;
+		import org.hibernate.SessionFactory;
+		import org.hibernate.Transaction;
+		import org.hibernate.cfg.Configuration;
+
+		public class Main {
+			public static void main(String[]args) {
+				
+				Teacher tchr1=new Teacher();
+				tchr1.setTeacherId(1);
+				tchr1.setTeacherNameString("NitiMam");
+				tchr1.setTeacherSal(45000);
+				
+				Configuration cfg=new Configuration();
+				cfg.addAnnotatedClass(com.hibernate.org.HibProj.Teacher.class);
+				cfg.configure();
+				SessionFactory sf= cfg.buildSessionFactory();
+				Session sn=sf.openSession();
+				Transaction trn=sn.beginTransaction();
+				
+				sn.persist(tchr1);
+				trn.commit();
+				
+				System.out.println(tchr1);
+			}
+		}
+		
+***************Embeddable***************
+
+	package com.hibernate.org.HibProj;
+	
+	import jakarta.persistence.Embeddable;
+	
+	@Embeddable
+	public class Address {
+		
+		private String city;
+		private String state;
+		private int pin;
+		public String getCity() {
+			return city;
+		}
+		public void setCity(String city) {
+			this.city = city;
+		}
+		public String getState() {
+			return state;
+		}
+		public void setState(String state) {
+			this.state = state;
+		}
+		public int getPin() {
+			return pin;
+		}
+		public void setPin(int pin) {
+			this.pin = pin;
+		}
+		@Override
+		public String toString() {
+			return "Address [city=" + city + ", state=" + state + ", pin=" + pin + "]";
+		}
+	}
+
+*************** One to one and Embeddable***************
+	
+	-----Main.java-----
+	
+		package com.hibernate.org.HibProj;
+	
+		import org.hibernate.Session;
+		import org.hibernate.SessionFactory;
+		import org.hibernate.Transaction;
+		import org.hibernate.cfg.Configuration;
+		
+		public class Main {
+			public static void main(String[]args) {
+				
+				Laptop l1=new Laptop();
+				l1.setLapId(1);
+				l1.setBrand("apple");
+				l1.setModelNo(4);
+				l1.setOs("macOs");
+				
+				Address loc1=new Address();
+				loc1.setCity("nadia");
+				loc1.setState("West-Bengal");
+				loc1.setPin(586);
+				
+				Student std1=new Student();
+				std1.setRollNo(4);
+				std1.setsName("Bisakha");
+				std1.setsAge(20);
+				std1.setLoc(loc1);
+				std1.setLap(l1);
+				
+				Configuration cfg=new Configuration();
+				cfg.addAnnotatedClass(com.hibernate.org.HibProj.Student.class);
+				cfg.addAnnotatedClass(com.hibernate.org.HibProj.Laptop.class);
+				cfg.configure();
+				SessionFactory sf= cfg.buildSessionFactory();
+				Session sn=sf.openSession();
+				Transaction trn=sn.beginTransaction();
+				
+				sn.persist(l1);
+				sn.persist(std1);
+				trn.commit();
+				
+				System.out.println(std1);
+			}
+		}
+	
+	-----Student.java-----
+	
+		package com.hibernate.org.HibProj;
+	
+		import jakarta.persistence.Entity;
+		import jakarta.persistence.Id;
+		import jakarta.persistence.OneToOne;
+		
+		@Entity
+		public class Student {
+			@Id
+			private int rollNo;
+			private String sName;
+			private int sAge;
+			private Address loc;
+			@OneToOne
+			private Laptop lap;
+			
+			public Laptop getLap() {
+				return lap;
+			}
+			public void setLap(Laptop lap) {
+				this.lap = lap;
+			}
+			public Address getLoc() {
+				return loc;
+			}
+			public void setLoc(Address loc) {
+				this.loc = loc;
+			}
+			public int getRollNo() {
+				return rollNo;
+			}
+			public void setRollNo(int rollNo) {
+				this.rollNo = rollNo;
+			}
+			public String getsName() {
+				return sName;
+			}
+			public void setsName(String sName) {
+				this.sName = sName;
+			}
+			public int getsAge() {
+				return sAge;
+			}
+			public void setsAge(int sAge) {
+				this.sAge = sAge;
+			}
+			@Override
+			public String toString() {
+				return "Student [rollNo=" + rollNo + ", sName=" + sName + ", sAge=" + sAge + ", loc=" + loc + ", lap=" + lap
+						+ "]";
+			}
+		}
+	
+	-----Address.java-----
+	
+		package com.hibernate.org.HibProj;
+
+		import jakarta.persistence.Embeddable;
+		
+		@Embeddable
+		public class Address {
+			
+			private String city;
+			private String state;
+			private int pin;
+			public String getCity() {
+				return city;
+			}
+			public void setCity(String city) {
+				this.city = city;
+			}
+			public String getState() {
+				return state;
+			}
+			public void setState(String state) {
+				this.state = state;
+			}
+			public int getPin() {
+				return pin;
+			}
+			public void setPin(int pin) {
+				this.pin = pin;
+			}
+			@Override
+			public String toString() {
+				return "Address [city=" + city + ", state=" + state + ", pin=" + pin + "]";
+			}
+		}
+
+
+	-----Laptop.java-----
+	
+		package com.hibernate.org.HibProj;
+
+		import jakarta.persistence.Entity;
+		import jakarta.persistence.Id;
+		
+		@Entity
+		public class Laptop {
+			
+			@Id
+			private int LapId;
+			private String brand;
+			private int modelNo;
+			private String os;
+			public String getBrand() {
+				return brand;
+			}
+			public void setBrand(String brand) {
+				this.brand = brand;
+			}
+			public int getModelNo() {
+				return modelNo;
+			}
+			public void setModelNo(int modelNo) {
+				this.modelNo = modelNo;
+			}
+			public String getOs() {
+				return os;
+			}
+			public void setOs(String os) {
+				this.os = os;
+			}
+			public int getLapId() {
+				return LapId;
+			}
+			public void setLapId(int lapId) {
+				LapId = lapId;
+			}
+			@Override
+			public String toString() {
+				return "Laptop [LapId=" + LapId + ", brand=" + brand + ", modelNo=" + modelNo + ", os=" + os + "]";
+			}
+		}
+
+	-----hibernate.cfg.xml-----
+
+				
+		<hibernate-configuration xmlns="http://www.hibernate.org/xsd/orm/cfg">
+			<session-factory>
+			
+				<property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+				<property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/student_db</property>
+				<property name="hibernate.connection.username">postgres</property>
+				<property name="hibernate.connection.password">Fkp37Si@n</property>
+				<property name="hibernate.hbm2ddl.auto">create</property>
+				<property name="hibernate.show_sql">true</property>
+				<property name="hibernate.format_sql">true</property>
+				<property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+				
+			</session-factory>
+		</hibernate-configuration>
+		
+*************** One to many and many to one ***************
+
+	-----Main.java-----
+		
+		package com.hibernate.org.HibProj;
+
+		import java.util.Arrays;
+		
+		import org.hibernate.Session;
+		import org.hibernate.SessionFactory;
+		import org.hibernate.Transaction;
+		import org.hibernate.cfg.Configuration;
+		
+		public class Main {
+			public static void main(String[]args) {
+				
+				Laptop l1=new Laptop();
+				l1.setLapId(1);
+				l1.setBrand("apple");
+				l1.setModelNo(4);
+				l1.setOs("macOs");
+				
+				Laptop l2=new Laptop();
+				l2.setLapId(2);
+				l2.setBrand("hp");
+				l2.setModelNo(8);
+				l2.setOs("windows");
+				
+				Student std1=new Student();
+				std1.setRollNo(4);
+				std1.setsName("Bisakha");
+				std1.setsAge(20);
+				std1.setLaps(Arrays.asList(l1,l2));
+				
+				l1.setStd(std1);
+				l2.setStd(std1);
+				
+				Configuration cfg=new Configuration();
+				cfg.addAnnotatedClass(com.hibernate.org.HibProj.Student.class);
+				cfg.addAnnotatedClass(com.hibernate.org.HibProj.Laptop.class);
+				cfg.configure();
+				SessionFactory sf= cfg.buildSessionFactory();
+				Session sn=sf.openSession();
+				Transaction trn=sn.beginTransaction();
+				
+				sn.persist(l1);
+				sn.persist(l2);
+				sn.persist(std1);
+				trn.commit();
+				
+				System.out.println(std1);
+			}
+		}
+	
+	-----Student.java-----
+	
+		package com.hibernate.org.HibProj;
+		
+		import java.util.List;
+		
+		import jakarta.persistence.Entity;
+		import jakarta.persistence.Id;
+		import jakarta.persistence.OneToMany;
+		
+		@Entity
+		public class Student {
+			@Id
+			private int rollNo;
+			private String sName;
+			private int sAge;
+			@OneToMany(mappedBy = "std")
+			private List<Laptop> laps;
+			
+			public int getRollNo() {
+				return rollNo;
+			}
+			public void setRollNo(int rollNo) {
+				this.rollNo = rollNo;
+			}
+			public String getsName() {
+				return sName;
+			}
+			public void setsName(String sName) {
+				this.sName = sName;
+			}
+			public int getsAge() {
+				return sAge;
+			}
+			public void setsAge(int sAge) {
+				this.sAge = sAge;
+			}
+			public List<Laptop> getLaps() {
+				return laps;
+			}
+			public void setLaps(List<Laptop> laps) {
+				this.laps = laps;
+			}
+			@Override
+			public String toString() {
+				return "Student [rollNo=" + rollNo + ", sName=" + sName + ", sAge=" + sAge + ", laps=" + laps + "]";
+			}
+		}
+		
+	-----Laptop.java-----
+	
+		package com.hibernate.org.HibProj;
+
+		import jakarta.persistence.Entity;
+		import jakarta.persistence.Id;
+		import jakarta.persistence.ManyToOne;
+		
+		@Entity
+		public class Laptop {
+			
+			@Id
+			private int LapId;
+			private String brand;
+			private int modelNo;
+			private String os;
+			@ManyToOne
+			private Student std;
+			public Student getStd() {
+				return std;
+			}
+			public void setStd(Student std) {
+				this.std = std;
+			}
+			public String getBrand() {
+				return brand;
+			}
+			public void setBrand(String brand) {
+				this.brand = brand;
+			}
+			public int getModelNo() {
+				return modelNo;
+			}
+			public void setModelNo(int modelNo) {
+				this.modelNo = modelNo;
+			}
+			public String getOs() {
+				return os;
+			}
+			public void setOs(String os) {
+				this.os = os;
+			}
+			public int getLapId() {
+				return LapId;
+			}
+			public void setLapId(int lapId) {
+				LapId = lapId;
+			}
+			@Override
+			public String toString() {
+				return "Laptop [LapId=" + LapId + ", brand=" + brand + ", modelNo=" + modelNo + ", os=" + os + ", ]";
+			}
+		}
+
+*************** Many to MaNY ***************
+
+	-----Main.java-----
+	
+		package com.hibernate.org.HibProj;
+
+		import java.util.Arrays;
+		
+		import org.hibernate.Session;
+		import org.hibernate.SessionFactory;
+		import org.hibernate.Transaction;
+		import org.hibernate.cfg.Configuration;
+		
+		public class Main {
+			public static void main(String[]args) {
+				
+				Laptop l1=new Laptop();
+				l1.setLapId(1);
+				l1.setBrand("apple");
+				l1.setModelNo(4);
+				l1.setOs("macOs");
+				
+				Laptop l2=new Laptop();
+				l2.setLapId(2);
+				l2.setBrand("hp");
+				l2.setModelNo(8);
+				l2.setOs("windows");
+				
+				Laptop l3=new Laptop();
+				l3.setLapId(3);
+				l3.setBrand("dell");
+				l3.setModelNo(32);
+				l3.setOs("windows");
+				
+				Student std1=new Student();
+				std1.setRollNo(1);
+				std1.setsName("Bisakha");
+				std1.setsAge(20);
+				std1.setLaps(Arrays.asList(l1,l2));
+				
+				Student std2=new Student();
+				std2.setRollNo(2);
+				std2.setsName("Bidisha");
+				std2.setsAge(21);
+				std2.setLaps(Arrays.asList(l2,l3));
+				
+				Student std3=new Student();
+				std3.setRollNo(3);
+				std3.setsName("Bini");
+				std3.setsAge(19);
+				std3.setLaps(Arrays.asList(l1,l3));
+				
+				l1.setStd(Arrays.asList(std1,std3));
+				l2.setStd(Arrays.asList(std1,std2));
+				l3.setStd(Arrays.asList(std2,std3));
+				
+				Configuration cfg=new Configuration();
+				cfg.addAnnotatedClass(com.hibernate.org.HibProj.Student.class);
+				cfg.addAnnotatedClass(com.hibernate.org.HibProj.Laptop.class);
+				cfg.configure();
+				SessionFactory sf= cfg.buildSessionFactory();
+				Session sn=sf.openSession();
+				Transaction trn=sn.beginTransaction();
+				
+				sn.persist(l1);
+				sn.persist(l2);
+				sn.persist(l3);
+				sn.persist(std1);
+				sn.persist(std2);
+				sn.persist(std3);
+				trn.commit();
+				
+				System.out.println(std1);
+			}
+		}
+
+	-----Student.java-----
+	
+		package com.hibernate.org.HibProj;
+		
+		import java.util.List;
+		
+		import jakarta.persistence.Entity;
+		import jakarta.persistence.Id;
+		import jakarta.persistence.ManyToMany;
+		
+		@Entity
+		public class Student {
+			@Id
+			private int rollNo;
+			private String sName;
+			private int sAge;
+			@ManyToMany
+			private List<Laptop> laps;
+			
+			public int getRollNo() {
+				return rollNo;
+			}
+			public void setRollNo(int rollNo) {
+				this.rollNo = rollNo;
+			}
+			public String getsName() {
+				return sName;
+			}
+			public void setsName(String sName) {
+				this.sName = sName;
+			}
+			public int getsAge() {
+				return sAge;
+			}
+			public void setsAge(int sAge) {
+				this.sAge = sAge;
+			}
+			public List<Laptop> getLaps() {
+				return laps;
+			}
+			public void setLaps(List<Laptop> laps) {
+				this.laps = laps;
+			}
+			@Override
+			public String toString() {
+				return "Student [rollNo=" + rollNo + ", sName=" + sName + ", sAge=" + sAge + ", laps=" + laps + "]";
+			}
+		}
+
+	-----Laptop.java-----
+	
+		package com.hibernate.org.HibProj;
+
+		import java.util.List;
+		
+		import jakarta.persistence.Entity;
+		import jakarta.persistence.Id;
+		import jakarta.persistence.ManyToMany;
+		
+		
+		@Entity
+		public class Laptop {
+			
+			@Id
+			private int LapId;
+			private String brand;
+			private int modelNo;
+			private String os;
+			@ManyToMany
+			private List<Student> std;
+			
+			public List<Student> getStd() {
+				return std;
+			}
+			public void setStd(List<Student> std) {
+				this.std = std;
+			}
+			public String getBrand() {
+				return brand;
+			}
+			public void setBrand(String brand) {
+				this.brand = brand;
+			}
+			public int getModelNo() {
+				return modelNo;
+			}
+			public void setModelNo(int modelNo) {
+				this.modelNo = modelNo;
+			}
+			public String getOs() {
+				return os;
+			}
+			public void setOs(String os) {
+				this.os = os;
+			}
+			public int getLapId() {
+				return LapId;
+			}
+			public void setLapId(int lapId) {
+				LapId = lapId;
+			}
+			@Override
+			public String toString() {
+				return "Laptop [LapId=" + LapId + ", brand=" + brand + ", modelNo=" + modelNo + ", os=" + os + ", ]";
+			}
+		}
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+**************Eager fetching and Lazy Fetching***************
+
+	-----Main.java-----
+		package com.hibernate.org.HibProj;
+		
+		import java.util.Arrays;
+		
+		import org.hibernate.Session;
+		import org.hibernate.SessionFactory;
+		import org.hibernate.Transaction;
+		import org.hibernate.cfg.Configuration;
+		
+		public class Main {
+			public static void main(String[]args) {
+				
+				Laptop l1=new Laptop();
+				l1.setLapId(1);
+				l1.setBrand("apple");
+				l1.setModelNo(4);
+				l1.setOs("macOs");
+				
+				Laptop l2=new Laptop();
+				l2.setLapId(2);
+				l2.setBrand("hp");
+				l2.setModelNo(8);
+				l2.setOs("windows");
+				
+				Laptop l3=new Laptop();
+				l3.setLapId(3);
+				l3.setBrand("dell");
+				l3.setModelNo(32);
+				l3.setOs("windows");
+				
+				Student std1=new Student();
+				std1.setRollNo(1);
+				std1.setsName("Bisakha");
+				std1.setsAge(20);
+				std1.setLaps(Arrays.asList(l1,l2));
+				
+				Student std2=new Student();
+				std2.setRollNo(2);
+				std2.setsName("Bidisha");
+				std2.setsAge(21);
+				std2.setLaps(Arrays.asList(l3));
+				
+				
+				Configuration cfg=new Configuration();
+				cfg.addAnnotatedClass(com.hibernate.org.HibProj.Student.class);
+				cfg.addAnnotatedClass(com.hibernate.org.HibProj.Laptop.class);
+				cfg.configure();
+				SessionFactory sf= cfg.buildSessionFactory();
+				Session sn=sf.openSession();
+				Transaction trn=sn.beginTransaction();
+				
+				sn.persist(l1);
+				sn.persist(l2);
+				sn.persist(l3);
+				sn.persist(std1);
+				sn.persist(std2);
+				
+				trn.commit();
+				
+				Session sn2=sf.openSession();
+				Transaction trn2=sn2.beginTransaction();
+				
+				Student std3=sn2.find(Student.class,2);
+				
+				trn2.commit();
+				
+				
+		//		System.out.println(std3);
+			}
+		}
+		
+	-----Student.java-----
+	
+		package com.hibernate.org.HibProj;
+		
+		import java.util.List;
+		
+		import jakarta.persistence.Entity;
+		import jakarta.persistence.FetchType;
+		import jakarta.persistence.Id;
+		import jakarta.persistence.OneToMany;
+		
+		@Entity
+		public class Student {
+			@Id
+			private int rollNo;
+			private String sName;
+			private int sAge;
+			@OneToMany(fetch=FetchType.EAGER)
+			private List<Laptop> laps;
+			
+			public int getRollNo() {
+				return rollNo;
+			}
+			public void setRollNo(int rollNo) {
+				this.rollNo = rollNo;
+			}
+			public String getsName() {
+				return sName;
+			}
+			public void setsName(String sName) {
+				this.sName = sName;
+			}
+			public int getsAge() {
+				return sAge;
+			}
+			public void setsAge(int sAge) {
+				this.sAge = sAge;
+			}
+			public List<Laptop> getLaps() {
+				return laps;
+			}
+			public void setLaps(List<Laptop> laps) {
+				this.laps = laps;
+			}
+			@Override
+			public String toString() {
+				return "Student [rollNo=" + rollNo + ", sName=" + sName + ", sAge=" + sAge + ", laps=" + laps + "]";
+			}
+		}
+		
+	-----Laptop.java-----
+	
+		package com.hibernate.org.HibProj;
+		
+		import java.util.List;
+		
+		import jakarta.persistence.Entity;
+		import jakarta.persistence.Id;
+		import jakarta.persistence.ManyToMany;
+		
+		
+		@Entity
+		public class Laptop {
+			
+			@Id
+			private int LapId;
+			private String brand;
+			private int modelNo;
+			private String os;
+			
+			
+			public String getBrand() {
+				return brand;
+			}
+			public void setBrand(String brand) {
+				this.brand = brand;
+			}
+			public int getModelNo() {
+				return modelNo;
+			}
+			public void setModelNo(int modelNo) {
+				this.modelNo = modelNo;
+			}
+			public String getOs() {
+				return os;
+			}
+			public void setOs(String os) {
+				this.os = os;
+			}
+			public int getLapId() {
+				return LapId;
+			}
+			public void setLapId(int lapId) {
+				LapId = lapId;
+			}
+			@Override
+			public String toString() {
+				return "Laptop [LapId=" + LapId + ", brand=" + brand + ", modelNo=" + modelNo + ", os=" + os + ", ]";
+			}
+		}
+
+	-----hibernate.cfg.xml-----
+	
+		<hibernate-configuration xmlns="http://www.hibernate.org/xsd/orm/cfg">
+			<session-factory>
+			
+				<property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+				<property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/student_db</property>
+				<property name="hibernate.connection.username">postgres</property>
+				<property name="hibernate.connection.password">Fkp37Si@n</property>
+				<property name="hibernate.hbm2ddl.auto">create</property>
+				<property name="hibernate.show_sql">true</property>
+				<!-- <property name="hibernate.format_sql">true</property> -->
+				<property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+				
+			</session-factory>
+		</hibernate-configuration>
+
+

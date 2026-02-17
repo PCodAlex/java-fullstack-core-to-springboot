@@ -10,7 +10,7 @@ public class DemoJdbc {
 		Scanner sc=new Scanner(System.in);
 		
 		Class.forName("org.postgresql.Driver");//load the driver
-		Connection con=DriverManager.getConnection("jdbc:postgresql://localhost:5432/student_db","postgres","Fkp37Si@n");
+		Connection con=DriverManager.getConnection("jdbc:postgresql://localhost:5432/student_db","postgres","********9");
 		System.out.println("Connection Eastablished");
 		
 		PreparedStatement ps=con.prepareStatement(query);
