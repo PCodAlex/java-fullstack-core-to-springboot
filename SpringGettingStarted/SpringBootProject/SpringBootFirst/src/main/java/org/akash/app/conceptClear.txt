@@ -1,0 +1,92 @@
+package org.akash.app;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+
+@SpringBootApplication
+public class SpringBootFirstApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(SpringBootFirstApplication.class, args);
+		System.out.println("hello world");
+	}
+
+}
+
+***********************************************************************
+package org.akash.app;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+
+@SpringBootApplication
+public class SpringBootFirstApplication {
+
+	public static void main(String[] args) {
+		ApplicationContext context=SpringApplication.run(SpringBootFirstApplication.class, args);
+//		Alien a1=new Alien();
+		Alien a1=context.getBean(Alien.class);
+		a1.writeCode();
+	}
+}
+-------------------------------------------------------------
+package org.akash.app;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class Alien {
+	public void writeCode() {
+		System.out.println("coding...");
+	}
+}
+************************************************************************
+package org.akash.app;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+
+@SpringBootApplication
+public class SpringBootFirstApplication {
+
+	public static void main(String[] args) {
+		ApplicationContext context=SpringApplication.run(SpringBootFirstApplication.class, args);
+//		Alien a1=new Alien();
+		Alien a1=context.getBean(Alien.class);
+		a1.writeCode();
+		a1.runCode();
+	}
+}
+--------------------------------------------------------------
+package org.akash.app;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Alien {
+	@Autowired
+	Laptop laptop;
+	public void writeCode() {
+		System.out.println("coding...");
+	}
+	public void runCode() {
+		laptop.compilation();
+	}
+}
+-----------------------------------------------------------
+package org.akash.app;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class Laptop {
+	public void compilation() {
+		System.out.println("compiling...");
+		System.out.println("running...");
+	}
+}
+
