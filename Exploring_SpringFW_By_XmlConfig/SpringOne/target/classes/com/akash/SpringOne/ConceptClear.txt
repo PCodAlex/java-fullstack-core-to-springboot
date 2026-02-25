@@ -1,0 +1,451 @@
+package com.akash.SpringOne;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+    	ApplicationContext context=new ClassPathXmlApplicationContext("spring.xml");
+        Alien a1=context.getBean(Alien.class);
+        a1.code();
+    }
+}
+-------------------------------------------------------------------
+package com.akash.SpringOne;
+
+public class Alien {
+	public void code() {
+		System.out.println("coding...");
+	}
+}
+-------------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean  class="com.akash.SpringOne.Alien">
+	</bean>
+</beans>
+
+************************************************************************
+
+scope : prototype/singleton
+____________________________
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+    	ApplicationContext context=new ClassPathXmlApplicationContext("spring.xml");
+        Alien a1=context.getBean(Alien.class);
+        a1.code();
+        Alien a2=context.getBean(Alien.class);
+        a2.code();
+    }
+}
+------------------------------------------------------------------
+package com.akash.SpringOne;
+
+public class Alien {
+	int age;
+	public void code() {
+		System.out.println(age+"coding...");
+	}
+}
+-------------------------------------------------------------------
+
+singleton:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean  class="com.akash.SpringOne.Alien" scope="singleton">
+	</bean>
+</beans>
+
+OUTPUT--->
+21coding...
+21coding...
+
+------------------------------------------------------------------
+
+prototype:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean  class="com.akash.SpringOne.Alien" scope="prototype">
+	</bean>
+</beans>
+
+OUTPUT--->
+21coding...
+0coding...
+
+************************************************************************
+
+Setter Primitive value Injection:
+
+package com.akash.SpringOne;
+
+public class Alien {
+	private int age;
+	public int getAge() {
+		return age;
+	}
+	public void setAge(int age) {
+		System.out.println("---setterInjection---");
+		this.age = age;
+	}
+	public void code() {
+		System.out.println(age+"coding...");
+	}
+}
+----------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean  class="com.akash.SpringOne.Alien">
+		<property name="age" value="21"></property>
+	</bean>
+</beans>
+
+OUTPUT--->
+---setterInjection---
+21coding...
+21coding...
+
+
+***as the age variable is private in the Alien class but we pass the property in bean config while creating object it will set the variable value by the name=variableName given to in the property tag and this tag will call the setter method to set the value 
+
+************************************************************************
+
+Setter Referenece value Injection:
+
+package com.akash.SpringOne;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+    	ApplicationContext context=new ClassPathXmlApplicationContext("spring.xml");
+        Alien a1=context.getBean(Alien.class);
+        a1.code();
+//        Alien a2=context.getBean(Alien.class);
+//        a2.code();
+    }
+}
+-----------------------------------------------------------------
+package com.akash.SpringOne;
+
+public class Alien {
+	private int age;
+	private Laptop laptop;
+	public Laptop getLaptop() {
+		return laptop;
+	}
+	public void setLaptop(Laptop laptop) {
+		this.laptop = laptop;
+	}
+	public int getAge() {
+		return age;
+	}
+	public void setAge(int age) {
+		System.out.println("---setterInjection---");
+		this.age = age;
+	}
+	public void code() {
+		System.out.println(age+"coding...");
+		laptop.running();
+	}
+}
+-----------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean  class="com.akash.SpringOne.Alien">
+		<property name="age" value="21"></property>
+		<property name="laptop" ref="lap"></property>
+	</bean>
+	<bean id="lap" class="com.akash.SpringOne.Laptop">
+	</bean>
+</beans>
+
+OUTPUT--->
+---setterInjection---
+21coding...
+running on laptop
+
+
+value for primitive 
+AND
+ref for Refference 
+
+***********************************************************************
+
+Constructor injection:
+
+package com.akash.SpringOne;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+    	ApplicationContext context=new ClassPathXmlApplicationContext("spring.xml");
+        Alien a1=context.getBean(Alien.class);
+        a1.code();
+//        Alien a2=context.getBean(Alien.class);
+//        a2.code();
+    }
+}
+-----------------------------------------------------------------
+package com.akash.SpringOne;
+
+import java.beans.ConstructorProperties;
+
+public class Alien {
+	private int age;
+	private Laptop laptop;
+	
+	@ConstructorProperties({"age","laptop"})
+	public Alien(int age,Laptop laptop) {
+		this.age=age;
+		this.laptop=laptop;
+	}
+	
+	public Laptop getLaptop() {
+		return laptop;
+	}
+	public void setLaptop(Laptop laptop) {
+		this.laptop = laptop;
+	}
+	public int getAge() {
+		return age;
+	}
+	public void setAge(int age) {
+		System.out.println("---setterInjection---");
+		this.age = age;
+	}
+	public void code() {
+		System.out.println(age+"coding...");
+		laptop.running();
+	}
+}
+----------------------------------------------------------------
+package com.akash.SpringOne;
+
+public class Laptop {
+	public void running() {
+		System.out.println("running on laptop");
+	}
+}
+-----------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean  class="com.akash.SpringOne.Alien">
+		<!-- <constructor-arg name="age" value="21"/>
+		<constructor-arg name="laptop" ref="lap"/> -->
+		
+		<constructor-arg name="laptop" ref="lap"/>
+		<constructor-arg name="age" value="21"/>
+		
+		<!-- <constructor-arg index="1" ref="lap"/>
+		<constructor-arg index="0" value="21"/> -->
+		
+		<!-- <constructor-arg type="int" value="21"/>
+		<constructor-arg type="com.akash.SpringOne.Laptop" ref="lap"/> -->
+		
+	</bean>
+	<bean id="lap" class="com.akash.SpringOne.Laptop">
+	</bean>
+</beans>
+
+OUTPUT--->
+21coding...
+running on laptop
+
+constructor-org done the work of perameterized constructor
+1.we can use type while we donot have same type of variable to pass the value 
+2.index=0-n it is ideal for passing value 
+3.name it is also ideal but if serial not matched it will give error and for forcebly mention the name then we have to use @ConstructorProperties({"age","laptop"})
+
+***********************************************************************
+
+interface creating and autowired :
+
+package com.akash.SpringOne;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class App 
+{
+    public static void main( String[] args )
+    {
+    	ApplicationContext context=new ClassPathXmlApplicationContext("spring.xml");
+        Alien a1=context.getBean(Alien.class);
+        a1.code();
+    }
+}
+
+----------------------------------------------------------------
+package com.akash.SpringOne;
+
+public class Alien {
+	private int age;
+	private Computer com;
+	public int getAge() {
+		return age;
+	}
+	public void setAge(int age) {
+		this.age = age;
+	}
+	public Computer getCom() {
+		return com;
+	}
+	public void setCom(Computer com) {
+		this.com = com;
+	}
+	
+	public void code() {
+		System.out.println("developer age : "+age);
+		com.running();
+	}
+}
+----------------------------------------------------------------
+package com.akash.SpringOne;
+
+public interface Computer {
+	void running();
+}
+----------------------------------------------------------------
+package com.akash.SpringOne;
+
+public class Laptop implements Computer{
+	@Override
+	public void running() {
+		System.out.println("running on laptop");
+	}
+}
+----------------------------------------------------------------
+package com.akash.SpringOne;
+
+public class Desktop implements Computer{
+	@Override
+	public void running() {
+		System.out.println("running on laptop");
+	}
+}
+----------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="alien" class="com.akash.SpringOne.Alien" autowire="byType">
+		<property name="age" value="23"/>
+		<!-- <property name="com" ref="com"/> -->
+	</bean>
+	<bean id="com1" class="com.akash.SpringOne.Laptop" primary="true"/>
+	<bean id="com2" class="com.akash.SpringOne.Desktop"/>
+</beans>
+
+autowire=byName/byType
+autowire works only when the property name and ref are same and the passed id is also same
+in byType we can prioritize one bean by passing primary="true"
+
+but in both case if property is given explicitly then the object will be passed based on property only 
+
+***********************************************************************
+
+lazy-init="true":
+_________________
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="alien" class="com.akash.SpringOne.Alien" autowire="byType">
+		<property name="age" value="23"/>
+		<!-- <property name="com" ref="com"/> -->
+	</bean>
+	<bean id="com1" class="com.akash.SpringOne.Laptop" primary="true"/>
+	<bean id="com2" class="com.akash.SpringOne.Desktop" lazy-init="true"/>
+</beans>
+
+lazy-init :true will put the bean property to create object when it is needed if it is not needed then the bean will not create any object 
+
+**************************************************************************************************************
+
+getBean by name and type :
+
+name:
+(Alien)context.getBean("alien") in that case we have to type caste 
+
+name+type:
+context.getBean("alien",Alien.class) in that case we also provide the class name so we donot need the typecasting 
+
+only type:
+context.getBean(Alien.class)--> it is also known as genaric way 
+
+***************************************************************************************************************
+innerBean:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="alien" class="com.akash.SpringOne.Alien" autowire="byType">
+		<property name="age" value="23"/>
+		<property name="com" >
+			<bean class="com.akash.SpringOne.Laptop"/>
+		</property>
+	</bean>
+	
+</beans>
+
+OUTER-BEAN:<bean id="alien" class="com.akash.SpringOne.Alien" autowire="byType">
+INNER-BEAN:<property name="com" >
+				<bean class="com.akash.SpringOne.Laptop"/>
+			</property>
