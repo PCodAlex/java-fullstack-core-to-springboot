@@ -1,0 +1,355 @@
+Spring : java based configuration 
+_________________________________
+
+package com.akash.SpringTwo;
+
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+        ApplicationContext context =new AnnotationConfigApplicationContext(SpringCfg.class);
+        Desktop desktop=context.getBean("desktop",Desktop.class);
+        desktop.running();
+    }
+}
+-------------------------------------------------------------
+package com.akash.SpringTwo;
+
+
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+
+
+@Configuration
+public class SpringCfg {
+
+	@Bean
+	public Desktop desktop() {
+		return new Desktop();
+	}
+}
+--------------------------------------------------------------
+package com.akash.SpringTwo;
+
+
+public class Desktop implements Computer{
+	@Override
+	public void running() {
+		System.out.println("code running on : Desktop");
+	}
+}
+************************************************************************
+
+Bean Name :
+___________
+
+package com.akash.SpringTwo;
+
+
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+
+
+@Configuration
+public class SpringCfg {
+
+	@Bean(name={"desktop","advComp","compt"})
+	public Desktop desktop() {
+		return new Desktop();
+	}
+}
+
+************************************************************************
+
+scope : prototype / singleton
+_____________________________
+
+package com.akash.SpringTwo;
+
+
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+
+
+@Configuration
+public class SpringCfg {
+
+	@Bean(name={"desktop","advComp","compt"})
+	@Scope("prototype")
+	public Desktop desktop() {
+		return new Desktop();
+	}
+}
+
+************************************************************************
+
+@Autowire:
+__________
+
+package com.akash.SpringTwo;
+
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+        ApplicationContext context =new AnnotationConfigApplicationContext(SpringCfg.class);
+        Alien alien=context.getBean("alien",Alien.class);
+        alien.working();
+    }
+}
+------------------------------------------------------------
+package com.akash.SpringTwo;
+
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+
+@Configuration
+public class SpringCfg {
+	
+	@Bean
+	public Alien alien(@Autowired Computer com) { //--->but here @AutoWired is optional basically now this annotation is not used it can autowired by default no need of the annotation
+		Alien a1=new Alien();
+		a1.setCom(com);
+		return a1;
+	}
+
+	@Bean
+	public Desktop desktop() {
+		return new Desktop();
+	}
+}
+--------------------------------------------------------------
+package com.akash.SpringTwo;
+
+public class Alien {
+	private Computer com;
+
+	public Computer getCom() {
+		return com;
+	}
+
+	public void setCom(Computer com) {
+		this.com = com;
+	}
+	
+	public void working() {
+		System.out.println("Alien Working :");
+		com.running();
+	}
+}
+-------------------------------------------------------------
+package com.akash.SpringTwo;
+
+public interface Computer {
+	void running();
+}
+-------------------------------------------------------------
+package com.akash.SpringTwo;
+
+
+public class Desktop implements Computer{
+	@Override
+	public void running() {
+		System.out.println("code running on : Desktop");
+	}
+}
+--------------------------------------------------------------
+package com.akash.SpringTwo;
+
+public class Laptop implements Computer{
+	@Override
+	public void running() {
+		System.out.println("code running on : Laptop");
+	}
+}
+---------------------------------------------------------------
+
+@Qualifier: it work as a ref or id name in xml configaration
+___________
+
+package com.akash.SpringTwo;
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+
+@Configuration
+public class SpringCfg {
+	
+	@Bean
+	public Alien alien(@Qualifier("laptop") Computer com) {
+		Alien a1=new Alien();
+		a1.setCom(com);
+		return a1;
+	}
+
+	@Bean
+	public Desktop desktop() {
+		return new Desktop();
+	}
+	
+	@Bean
+	public Laptop laptop() {
+		return new Laptop();
+	}
+}
+***********************************************************************
+
+Primary : it works as a primary property in xml config 
+_________
+
+package com.akash.SpringTwo;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+
+
+@Configuration
+public class SpringCfg {
+	
+	@Bean
+	public Alien alien(Computer com) {
+		Alien a1=new Alien();
+		a1.setCom(com);
+		return a1;
+	}
+
+	@Bean
+	public Desktop desktop() {
+		return new Desktop();
+	}
+	
+	@Bean
+	@Primary
+	public Laptop laptop() {
+		return new Laptop();
+	}
+}
+
+***********************************************************************
+
+full use of component stero type annotation 
+
+package com.akash.SpringTwo;
+
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+/**
+ * Hello world!
+ *
+ */
+public class App 
+{
+    public static void main( String[] args )
+    {
+        ApplicationContext context =new AnnotationConfigApplicationContext(SpringCfg.class);
+        Alien alien=context.getBean("alien",Alien.class);
+        alien.working();
+    }
+}
+
+----------------------------------------------------------------
+package com.akash.SpringTwo;
+
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ComponentScan
+public class SpringCfg {
+	
+}
+----------------------------------------------------------------
+package com.akash.SpringTwo;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component
+public class Alien {
+//	@Autowired
+//	@Qualifier("desktop")
+	private Computer com;
+	@Value("21")
+	private int money;
+
+	public Computer getCom() {
+		return com;
+	}
+
+	@Autowired
+	@Qualifier("desktop")
+	public void setCom(Computer com) {
+		this.com = com;
+	}
+	
+	public void working() {
+		System.out.println("Alien Working :");
+		com.running();
+	}
+}
+--------------------------------------------------------------
+package com.akash.SpringTwo;
+
+public interface Computer {
+	void running();
+}
+--------------------------------------------------------------
+package com.akash.SpringTwo;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class Desktop implements Computer{
+	@Override
+	public void running() {
+		System.out.println("code running on : Desktop");
+	}
+}
+---------------------------------------------------------------
+package com.akash.SpringTwo;
+
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Component;
+
+@Component
+@Primary
+public class Laptop implements Computer{
+	@Override
+	public void running() {
+		System.out.println("code running on : Laptop");
+	}
+}
