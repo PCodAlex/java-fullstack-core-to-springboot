@@ -51,4 +51,24 @@ public class StudentRepo {
 		
 		return jdbc.query(selectQuery, mapper);
 	}
+	
+	public void updateMarks(int rollNo,int marks){
+	    String query="update students set marks=? where rollno=?";
+	    jdbc.update(query, marks, rollNo);
+	    System.out.println("Updated successfully");
+	}
+	
+	public void delete(int rollNo){
+	    String query="delete from students where rollno=?";
+	    jdbc.update(query, rollNo);
+	    System.out.println("Deleted successfully");
+	}
+	
+	public void updateName(int rollNo, String newName) {
+
+	    String query = "update students set name=? where rollno=?";
+	    int rows = jdbc.update(query, newName, rollNo);
+
+	    System.out.println(rows + " row updated (name changed)");
+	}
 }

@@ -177,7 +177,314 @@ insert into students(rollno, name, marks) values(104,'Anush',56);
 insert into students(rollno, name, marks) values(105,'Abhisekh',94);
 
 ----------------------------------------------------------------------------------------------
-
+										🟢 1. What is H2 Database?
+										
+										H2 = lightweight in-memory database
+										
+										It is:
+										
+										Pure Java database
+										
+										Fast
+										
+										No installation required
+										
+										Mostly used in Spring Boot for testing & learning
+										
+										Think H2 like:
+										
+										temporary database inside your project
+										🟢 2. Why we don’t configure H2 manually?
+										
+										Because Spring Boot Auto-Configuration
+										
+										When Spring Boot sees dependency:
+										
+										h2 + jdbc starter
+										
+										It automatically configures:
+										
+										DataSource
+										Connection
+										Database
+										JdbcTemplate
+										
+										So no manual config required.
+										
+										This is called:
+										
+										⭐ Auto Configuration Magic
+										🟢 3. Where is H2 database located?
+										
+										In Spring Boot default:
+										
+										H2 runs in memory (RAM)
+										
+										NOT in hard disk.
+										
+										Means:
+										
+										When app stops → data gone
+										
+										Default URL internally:
+										
+										jdbc:h2:mem:testdb
+										
+										So database is created inside memory only.
+										
+										🟢 4. How your project connected to H2?
+										
+										You never configured manually.
+										
+										Spring Boot automatically did because of dependencies:
+										
+										If these dependencies exist:
+										spring-boot-starter-jdbc
+										h2
+										
+										Spring Boot does:
+										
+										Step 1:
+										
+										Creates DataSource (DB connection)
+										
+										Step 2:
+										
+										Creates JdbcTemplate bean
+										
+										Step 3:
+										
+										Connects to H2 memory DB
+										
+										Step 4:
+										
+										Runs schema.sql automatically
+										
+										Step 5:
+										
+										Runs data.sql automatically
+										
+										🟢 5. Where data stored?
+										
+										Since using default H2:
+										
+										Data stored in RAM
+										
+										When app stops → database erased.
+										
+										If you want permanent storage:
+										
+										jdbc:h2:file:~/testdb
+										
+										Then stored in disk.
+										
+										🟢 6. How schema.sql and data.sql executed automatically?
+										
+										You never called them, but Spring Boot executed them.
+										
+										Because Spring Boot rule:
+										
+										If these files present in:
+										
+										src/main/resources
+										
+										Spring Boot automatically executes them.
+										
+										schema.sql
+										
+										Used to create table
+										
+										create table students(
+										 rollno int primary key,
+										 name varchar(50),
+										 marks int
+										);
+										
+										Runs first.
+										
+										data.sql
+										
+										Used to insert initial data
+										
+										insert into students values(103,'Abhnish',87);
+										
+										Runs after schema.sql.
+										
+										🟢 7. How JdbcTemplate got connected?
+										
+										In your repo:
+										
+										@Autowired
+										private JdbcTemplate jdbc;
+										
+										Spring Boot already created JdbcTemplate bean.
+										
+										It internally connects with:
+										
+										DataSource → H2 database
+										
+										So you just use it.
+										
+										No connection code required.
+										
+										🟢 8. save() Method Deep Explanation
+										public void save(Student student) {
+										
+										    String query="insert into students (rollNo , name, marks) values(?,?,?)";
+										
+										    int rows=jdbc.update(query,
+										            student.getRollNo(),
+										            student.getName(),
+										            student.getMarks());
+										
+										    System.out.println(rows+" row effected");
+										}
+										Step-by-step working
+										
+										Step 1 → JdbcTemplate receives query
+										Step 2 → ? replaced with values
+										Step 3 → Executes SQL
+										Step 4 → Returns rows affected
+										
+										Example:
+										
+										insert into students values(1,"Akash",99)
+										
+										Returns:
+										
+										1 row affected
+										🟢 9. findAll() Method Deep Explanation
+										String selectQuery="select * from students;";
+										Step 1:
+										
+										Query executed using jdbcTemplate
+										
+										jdbc.query(selectQuery, mapper);
+										Step 2:
+										
+										Data comes as ResultSet (table format)
+										
+										Example:
+										
+										rollno | name | marks
+										101    Akash    99
+										102    Ankan    96
+										
+										But Java needs objects:
+										
+										Student object
+										
+										So RowMapper converts.
+										
+										🟢 10. What is RowMapper?
+										
+										RowMapper is:
+										
+										⭐ Spring interface
+										
+										NOT collection
+										NOT normal Java class
+										
+										Package:
+										
+										org.springframework.jdbc.core.RowMapper
+										
+										Used to convert:
+										
+										DB row → Java object
+										Your RowMapper code
+										RowMapper<Student> mapper=new RowMapper<>() {
+										    public Student mapRow(ResultSet rs,int rowNum)throws SQLException {
+										
+										        Student s=new Student();
+										        s.setRollNo(rs.getInt("rollno"));
+										        s.setName(rs.getString("name"));
+										        s.setMarks(rs.getInt("marks"));
+										
+										        return s;
+										    }
+										};
+										Working
+										
+										For each row:
+										
+										create Student object
+										fill data
+										return object
+										
+										Finally returns:
+										
+										List<Student>
+										🟢 11. Delete Operation
+										
+										Add in repo:
+										
+										public void delete(int rollNo){
+										    String query="delete from students where rollno=?";
+										    jdbc.update(query, rollNo);
+										    System.out.println("Deleted successfully");
+										}
+										
+										Call from service.
+										
+										🟢 12. Update Operation
+										public void updateMarks(int rollNo,int marks){
+										    String query="update students set marks=? where rollno=?";
+										    jdbc.update(query, marks, rollNo);
+										    System.out.println("Updated successfully");
+										}
+										🟢 13. JdbcTemplate only for Spring?
+										
+										YES 🔥
+										
+										JdbcTemplate is:
+										
+										Spring class
+										
+										Outside Spring we use normal JDBC:
+										
+										Connection
+										Statement
+										PreparedStatement
+										ResultSet
+										
+										Example normal JDBC:
+										
+										Connection con=DriverManager.getConnection(url,user,pass);
+										PreparedStatement ps=con.prepareStatement("select * from students");
+										ResultSet rs=ps.executeQuery();
+										
+										Too much boilerplate code.
+										
+										JdbcTemplate removes:
+										
+										connection creation
+										closing
+										exception handling
+										
+										So JdbcTemplate = simplified JDBC.
+										
+										🟢 14. Full Flow of Your Project
+										Spring Boot start
+										↓
+										Auto-config H2 DB
+										↓
+										schema.sql runs
+										↓
+										data.sql runs
+										↓
+										JdbcTemplate created
+										↓
+										StudentRepo uses JdbcTemplate
+										↓
+										save() → insert data
+										↓
+										findAll() → fetch data
+										↓
+										RowMapper → convert to object
+										↓
+										List<Student> returned
+										
 ***************************************************************************************************************
 
 Spring jdbc using postgresql :
@@ -269,3 +576,118 @@ spring.datasource.password=Fkp37Si@n  //added
 
 </project>
 
+----------------------------------------------------------------------------------------------
+
+										Why we add DB config in application.properties?
+										
+										Because in Spring Boot, application.properties is the central configuration file.
+										
+										We put all configuration there:
+										
+										database
+										server port
+										security
+										mail
+										etc
+										
+										Spring Boot automatically reads this file at startup.
+										
+										🔵 Why needed for PostgreSQL?
+										
+										Earlier with H2:
+										
+										Spring Boot auto-configured everything
+										
+										But PostgreSQL is external database
+										So Spring must know:
+										
+										where database is
+										
+										username/password
+										
+										driver
+										
+										So we provide details in application.properties.
+										
+										🔵 What each property means
+										1. Database URL
+										spring.datasource.url=jdbc:postgresql://localhost:5432/SpringJDBC
+										
+										Meaning:
+										
+										jdbc:postgresql → DB type
+										localhost → running on same PC
+										5432 → postgres port
+										SpringJDBC → database name
+										2. Driver
+										spring.datasource.driver-class-name=org.postgresql.Driver
+										
+										This is PostgreSQL JDBC driver
+										Spring uses it to connect Java → PostgreSQL.
+										
+										3. Username
+										spring.datasource.username=postgres
+										
+										Your DB username.
+										
+										4. Password
+										spring.datasource.password=xxxx
+										
+										DB password.
+										
+										🔵 Why inside application.properties only?
+										
+										Because Spring Boot has feature:
+										
+										⭐ Auto Configuration
+										
+										When Spring Boot starts:
+										
+										Step 1:
+										
+										Reads application.properties
+										
+										Step 2:
+										
+										Finds:
+										
+										spring.datasource.*
+										Step 3:
+										
+										Auto-creates:
+										
+										DataSource
+										Connection pool
+										JdbcTemplate
+										Transaction manager
+										Step 4:
+										
+										Connects to PostgreSQL automatically.
+										
+										You don’t write connection code manually.
+										
+										🔵 Internal flow
+										application.properties read
+										↓
+										DataSource created
+										↓
+										Driver loaded
+										↓
+										DB connection established
+										↓
+										JdbcTemplate uses that connection
+										↓
+										Your repo works
+										🔵 Why not configure in Java code?
+										
+										Old Spring way:
+										
+										@Bean DataSource
+										@Bean JdbcTemplate
+										
+										Spring Boot new way:
+										
+										Just write properties
+										Auto config handles everything
+										
+										Less code → faster development.

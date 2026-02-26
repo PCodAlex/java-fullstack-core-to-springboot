@@ -30,4 +30,18 @@ public class StudentService {
 		List<Student>studentList =studentRepo.findAll();
 		studentList.forEach((s)->{System.out.println(s);});
 	}
+	
+    public void deleteStudent(int rollNo) {
+        studentRepo.delete(rollNo);
+    }
+
+  
+    public void updateStudentName(int rollNo, String newName) {
+        studentRepo.updateName(rollNo, newName);
+    }
+
+  
+    public void updateStudentMarks(int rollNo, int marks) {
+        studentRepo.updateMarks(rollNo, marks);
+    }
 }
