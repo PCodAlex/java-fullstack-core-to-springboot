@@ -1,0 +1,53 @@
+🔵 Spring Boot 3-Layer Architecture (very short)
+
+1️. Controller → UI layer (Entry point)
+
+Handles HTTP request from user/browser
+
+Calls service layer
+
+Returns response (JSON/web page)
+
+Example:
+@RestController
+Receives request → calls service → sends response
+
+2️. Service → Business logic layer
+
+Contains main logic/calculation
+
+Processes data
+
+Talks with repository
+
+Example:
+@Service
+Calculate salary, validate login, process order etc.
+
+3️. Repository → Database layer
+
+Direct connection with database
+
+Performs CRUD operations
+
+Uses JPA/Hibernate
+
+Example:
+@Repository
+Save, delete, update, fetch from DB
+
+🔥 Simple Flow Diagram
+	Client (Browser/Postman)
+	        ↓
+	Controller  → receives request
+	        ↓
+	Service     → business logic
+	        ↓
+	Repository  → database work
+	        ↓
+	Database
+	💡 One-line interview answer
+
+Controller → handles request
+Service → contains business logic
+Repository → interacts with database
