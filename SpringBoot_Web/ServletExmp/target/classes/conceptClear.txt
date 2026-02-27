@@ -1,0 +1,918 @@
+✅ 3️⃣ Embedded vs External Tomcat
+
+Very important.
+
+🔵 External Tomcat
+
+You:
+
+Install Tomcat separately
+
+Build WAR file
+
+Deploy WAR into Tomcat server
+
+Architecture:
+
+Your App (WAR)
+↓
+External Tomcat Server
+↓
+Browser
+
+Used in:
+
+Traditional enterprise apps
+
+🔵 Embedded Tomcat
+
+Tomcat runs INSIDE your Java application.
+
+Like in your code:
+
+Tomcat tomcat = new Tomcat();
+
+No external server needed.
+
+Architecture:
+
+Your App + Tomcat (inside JAR)
+↓
+Browser
+
+Used in:
+
+Spring Boot
+
+Microservices
+
+Modern apps
+
+🔥 Basic Difference
+External	Embedded
+Installed separately	Runs inside app
+Deploy WAR	Run JAR
+Manual server	Self-contained
+Old style	Modern style
+✅ Now Let’s Understand Your Code From Scratch
+
+Ignore pom for now.
+
+🔵 Main Class
+Tomcat tomcat = new Tomcat();
+
+👉 Creates embedded Tomcat server object.
+
+tomcat.setPort(4545);
+
+👉 Server will run on port 4545.
+
+So you access:
+
+http://localhost:4545
+Context context = tomcat.addContext("", null);
+
+Context means:
+
+👉 Web application context
+👉 Base path of application
+
+"" means root context.
+
+Tomcat.addServlet(context,"helloServlet", new HelloServlet());
+
+This line:
+
+👉 Registers servlet
+👉 Name = helloServlet
+👉 Object = new HelloServlet()
+
+Equivalent to web.xml:
+
+<servlet>
+    <servlet-name>helloServlet</servlet-name>
+    <servlet-class>HelloServlet</servlet-class>
+</servlet>
+context.addServletMappingDecoded("/hello","helloServlet");
+
+Mapping:
+
+URL → /hello
+Servlet → helloServlet
+
+So when browser hits:
+
+http://localhost:4545/hello
+
+It calls HelloServlet.
+
+tomcat.start();
+
+Starts server.
+
+tomcat.getServer().await();
+
+Keeps server running.
+
+Without this → program exits immediately.
+
+🔵 Now Your Servlet
+public class HelloServlet extends HttpServlet
+
+HttpServlet is base class provided by Servlet API.
+
+public void service(HttpServletRequest req,HttpServletResponse res)
+
+This method handles all HTTP requests.
+
+Lifecycle:
+
+Browser → Tomcat → service() → response
+
+⚠️ Important:
+
+You only printed:
+
+System.out.println("in service...");
+
+That prints in console, not browser.
+
+If you want browser output:
+
+res.getWriter().println("Hello from Servlet");
+🔥 Full Request Flow
+
+Browser calls /hello
+
+Tomcat receives request
+
+Tomcat creates:
+
+HttpServletRequest
+
+HttpServletResponse
+
+Calls service()
+
+Servlet processes
+
+Response returned
+
+🔥 Very Important Concept
+
+Servlet lifecycle:
+
+Constructor
+
+init()
+
+service()
+
+destroy()
+
+Tomcat controls lifecycle.
+
+*************************************************************************************************************
+
+Now I’ll explain FULL REQUEST FLOW of YOUR exact code — step by step — like a real backend engineer.
+
+We’ll trace:
+
+Browser → Tomcat → Servlet → Response → Browser
+
+Based on your code.
+
+🧠 First: Your Setup Recap
+
+You created:
+
+Tomcat tomcat = new Tomcat();
+tomcat.setPort(4545);
+
+Server runs on:
+
+http://localhost:4545
+
+Then:
+
+Context context = tomcat.addContext("", null);
+
+Root context.
+
+Then:
+
+Tomcat.addServlet(context,"helloServlet", new HelloServlet());
+
+Servlet registered.
+
+Then:
+
+context.addServletMappingDecoded("/hello","helloServlet");
+
+URL mapping:
+
+/hello → HelloServlet
+🚀 NOW FULL REQUEST FLOW
+
+Let’s say you open browser:
+
+http://localhost:4545/hello
+
+Now what happens internally?
+
+🔵 STEP 1: Browser Sends HTTP Request
+
+Browser sends:
+
+GET /hello HTTP/1.1
+Host: localhost:4545
+
+This is pure HTTP request.
+
+🔵 STEP 2: Tomcat Listening on Port 4545
+
+You started:
+
+tomcat.start();
+
+Tomcat is now:
+
+Listening on port 4545
+
+Waiting for HTTP requests
+
+When request arrives:
+
+👉 Tomcat accepts it.
+
+🔵 STEP 3: Tomcat Finds Matching Servlet
+
+Tomcat checks:
+
+Which servlet is mapped to /hello ?
+
+From this line:
+
+context.addServletMappingDecoded("/hello","helloServlet");
+
+Tomcat knows:
+
+/hello → helloServlet
+
+And helloServlet is:
+
+new HelloServlet()
+
+So Tomcat selects that servlet.
+
+🔵 STEP 4: Servlet Lifecycle Check
+
+If this is FIRST request:
+
+Tomcat does:
+
+Create servlet instance (already created in your case)
+
+Call init() method (if overridden)
+
+After that, for every request:
+
+👉 Tomcat calls:
+
+service(request, response);
+🔵 STEP 5: Tomcat Creates Request & Response Objects
+
+Tomcat internally creates:
+
+HttpServletRequest req
+HttpServletResponse res
+
+These wrap:
+
+HTTP headers
+
+Parameters
+
+Body
+
+Output stream
+
+You did NOT create them.
+
+Tomcat creates them.
+
+🔵 STEP 6: Tomcat Calls Your Method
+
+Tomcat executes:
+
+helloServlet.service(req, res);
+
+Your code:
+
+public void service(HttpServletRequest req,HttpServletResponse res) {
+    System.out.println("in service...");
+}
+
+So console prints:
+
+in service...
+
+⚠️ Nothing sent to browser yet.
+
+🔵 STEP 7: Response Handling
+
+Since you didn’t write:
+
+res.getWriter().println("Hello");
+
+Browser receives:
+
+Empty response
+
+So page will be blank.
+
+🔵 STEP 8: Request Ends
+
+Tomcat:
+
+Closes response stream
+
+Releases thread
+
+Waits for next request
+
+🔥 VISUAL FLOW DIAGRAM
+Browser
+   ↓
+HTTP GET /hello
+   ↓
+Tomcat (port 4545)
+   ↓
+Find mapping "/hello"
+   ↓
+helloServlet
+   ↓
+Create request & response objects
+   ↓
+Call service()
+   ↓
+Console prints "in service..."
+   ↓
+Return response
+   ↓
+Browser shows blank page
+🧠 THREAD MODEL (Important)
+
+Tomcat uses:
+
+Thread per request
+
+For every new request:
+
+New thread created
+
+service() runs inside thread
+
+Thread returns to pool
+
+🔥 What If You Change to doGet()?
+
+If you override:
+
+protected void doGet(HttpServletRequest req, HttpServletResponse res)
+
+Then flow becomes:
+
+service()
+   ↓
+doGet()
+
+Because HttpServlet's default service() internally calls:
+
+if GET → doGet()
+if POST → doPost()
+🧠 Very Important: Who Controls Everything?
+
+NOT your main method after startup.
+
+After:
+
+tomcat.start();
+tomcat.getServer().await();
+
+Tomcat takes control.
+
+You just defined:
+
+What servlet
+
+What mapping
+
+Tomcat handles:
+
+HTTP parsing
+
+Threading
+
+Lifecycle
+
+Request creation
+
+Response sending
+
+🔥 Real Deep Insight
+
+Spring Boot works EXACTLY same way internally.
+
+Spring Boot:
+
+Embedded Tomcat
+↓
+DispatcherServlet
+↓
+Controller
+
+Servlet is foundation of entire Spring MVC.
+
+***************************************************************************************************************
+
+✅ First Understand: What is a “Context” in Tomcat?
+
+In Tomcat:
+
+Server
+ └── Service
+      └── Engine
+           └── Host
+                └── Context  ← (Your Web Application)
+                     └── Servlets
+
+👉 A Context = one web application
+
+If you install normal Tomcat and deploy:
+
+webapps/
+    app1/
+    app2/
+
+Each folder is a Context.
+
+Each context has:
+
+context path
+servlets
+resources
+WEB-INF
+🔥 What is Root Context?
+
+If your app runs at:
+
+http://localhost:4545/
+
+That means:
+
+Context path = ""
+
+(empty string)
+
+If context path was:
+
+/myapp
+
+Then URL would be:
+
+http://localhost:4545/myapp/hello
+🔵 Now Let’s Analyze Your First Line
+Context context = tomcat.addContext("", null);
+
+Method signature:
+
+addContext(String contextPath, String docBase)
+
+You passed:
+
+contextPath = ""
+docBase = null
+🔹 What does "" mean?
+
+It means:
+
+Root context
+
+So your app runs directly at:
+
+http://localhost:4545/
+
+NOT:
+
+http://localhost:4545/something
+🔹 What does null mean?
+
+Second parameter:
+
+docBase
+
+This means:
+
+Physical folder location of web application
+
+In external Tomcat:
+
+webapps/myapp
+
+That folder is docBase.
+
+But since you are running embedded Tomcat:
+
+You are NOT serving JSP files
+You are NOT serving static files
+
+So you passed:
+
+null
+
+Meaning:
+
+No physical folder needed
+
+Because everything is inside Java code.
+
+🔥 So This Line Means:
+Context context = tomcat.addContext("", null);
+
+👉 Create a web application
+👉 It runs at root path
+👉 No external folder
+
+🔵 Second Line
+Tomcat.addServlet(context,"helloServlet", new HelloServlet());
+
+This means:
+
+👉 Register a servlet inside this context.
+
+Equivalent to web.xml:
+
+<servlet>
+   <servlet-name>helloServlet</servlet-name>
+   <servlet-class>HelloServlet</servlet-class>
+</servlet>
+
+Here:
+
+"helloServlet" → internal name
+new HelloServlet() → actual servlet object
+
+So now Tomcat knows:
+
+There is one servlet inside this web app
+🔵 Third Line
+context.addServletMappingDecoded("/hello","helloServlet");
+
+This means:
+
+👉 Map URL pattern to servlet.
+
+Equivalent to web.xml:
+
+<servlet-mapping>
+   <servlet-name>helloServlet</servlet-name>
+   <url-pattern>/hello</url-pattern>
+</servlet-mapping>
+
+So:
+
+/hello → helloServlet
+🧠 Now Full Meaning of All 3 Lines Together
+1️⃣ Create web application (root)
+http://localhost:4545/
+2️⃣ Register servlet
+HelloServlet exists in this app
+3️⃣ Map URL
+http://localhost:4545/hello
+
+calls:
+
+HelloServlet
+🔥 What Happens If Context Path Is Not Empty?
+
+If you write:
+
+Context context = tomcat.addContext("/myapp", null);
+
+Now URL becomes:
+
+http://localhost:4545/myapp/hello
+
+NOT:
+
+http://localhost:4545/hello
+
+Because:
+
+Context path = /myapp
+Servlet mapping = /hello
+
+Final URL:
+
+/myapp + /hello
+🔥 Visual Representation
+
+Your code means:
+
+Server: localhost:4545
+Context: ""
+Servlet mapping: /hello
+
+Final URL:
+
+http://localhost:4545/hello
+🚀 Why This Feels Confusing?
+
+Because in Spring Boot:
+
+You never see:
+
+Context
+Servlet registration
+Servlet mapping
+
+Spring Boot hides it and does:
+
+Embedded Tomcat
+DispatcherServlet
+Auto registration
+
+You are now seeing the raw foundation.
+
+🔥 Final Mental Model
+
+Think like this:
+
+Tomcat = Hotel
+Context = One Branch of Hotel
+Servlet = One Room
+Mapping = Room number
+
+You created:
+
+Hotel
+One branch (root)
+One room (helloServlet)
+Room number (/hello)
+
+When guest visits:
+
+/hello
+
+Tomcat sends them to correct room.
+
+***************************************************************************************************************
+
+Now you are moving into real HTTP concepts.
+
+You changed from:
+
+service()
+
+to:
+
+doGet()
+
+Very good 👌
+
+Now let’s deeply understand what changed and then discuss:
+
+GET
+
+POST
+
+PUT
+
+DELETE
+
+When to use each
+
+How servlet handles them internally
+
+✅ First — What Changed When You Used doGet()?
+
+Earlier you wrote:
+
+public void service(HttpServletRequest req,HttpServletResponse res)
+
+Now you wrote:
+
+protected void doGet(HttpServletRequest req,HttpServletResponse res)
+🔥 Important:
+
+When you extend HttpServlet, it already has a service() method implemented.
+
+Internal flow of HttpServlet:
+
+protected void service(HttpServletRequest req, HttpServletResponse res) {
+    if(method == GET) doGet();
+    if(method == POST) doPost();
+    if(method == PUT) doPut();
+    if(method == DELETE) doDelete();
+}
+
+So:
+
+You don’t need to override service().
+
+You override:
+
+doGet()
+
+doPost()
+
+doPut()
+
+doDelete()
+
+✅ What Your Current Code Does
+res.setContentType("text/html");
+PrintWriter out=res.getWriter();
+out.println("<h2><i>hello world<i></h2>");
+Step-by-step:
+
+Browser sends GET request
+
+Tomcat calls doGet()
+
+You set response type
+
+You write HTML
+
+Browser renders it
+
+🔥 Now Let’s Understand HTTP Methods Properly
+🟢 1️⃣ GET
+Used for:
+
+Fetch data
+
+Read operation
+
+Example:
+
+GET /hello
+
+No body usually.
+
+Example Servlet:
+
+protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
+
+    res.setContentType("text/html");
+    PrintWriter out = res.getWriter();
+    out.println("<h1>This is GET request</h1>");
+}
+🟢 2️⃣ POST
+Used for:
+
+Submit form
+
+Create new data
+
+Send data to server
+
+Example HTML form:
+
+<form action="hello" method="post">
+   <input name="name"/>
+   <button type="submit">Send</button>
+</form>
+
+Servlet:
+
+protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
+
+    String name = req.getParameter("name");
+
+    res.setContentType("text/html");
+    PrintWriter out = res.getWriter();
+    out.println("<h1>Hello " + name + "</h1>");
+}
+🟢 3️⃣ PUT
+Used for:
+
+Update existing data
+
+Example:
+
+protected void doPut(HttpServletRequest req, HttpServletResponse res) throws IOException {
+
+    res.getWriter().println("PUT request received");
+}
+
+⚠️ In browser you cannot directly test PUT easily.
+Use:
+
+Postman
+
+Curl
+
+🟢 4️⃣ DELETE
+Used for:
+
+Delete resource
+
+Example:
+
+protected void doDelete(HttpServletRequest req, HttpServletResponse res) throws IOException {
+
+    res.getWriter().println("DELETE request received");
+}
+🔥 Complete Example (All Methods Together)
+public class HelloServlet extends HttpServlet {
+
+    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        res.getWriter().println("GET request handled");
+    }
+
+    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        res.getWriter().println("POST request handled");
+    }
+
+    protected void doPut(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        res.getWriter().println("PUT request handled");
+    }
+
+    protected void doDelete(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        res.getWriter().println("DELETE request handled");
+    }
+}
+🔥 Very Important Concept (REST Mapping)
+
+In real backend apps:
+
+HTTP Method	Meaning	Database Operation
+GET	Read	SELECT
+POST	Create	INSERT
+PUT	Update	UPDATE
+DELETE	Delete	DELETE
+
+Servlet is foundation of REST API.
+
+🔥 Why We Prefer doGet() Instead of service()
+
+If you override service():
+
+You must manually check method type.
+
+You lose HttpServlet’s internal method routing.
+
+Best practice:
+
+Override specific methods.
+
+🔥 Request Flow Internally
+
+When browser sends:
+
+GET /hello
+
+Tomcat does:
+
+service()
+   ↓
+detect method = GET
+   ↓
+call doGet()
+
+For POST:
+
+service()
+   ↓
+detect method = POST
+   ↓
+call doPost()
+🔥 Important Interview Question
+
+Difference between:
+
+doGet()
+doPost()
+Answer:
+
+GET:
+
+Data in URL
+
+Limited size
+
+Visible
+
+Used for fetching
+
+POST:
+
+Data in body
+
+Large size allowed
+
+Not visible in URL
+
+Used for sending data
