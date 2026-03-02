@@ -1,0 +1,1047 @@
+package org.akash.app;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class SpringWebFirstApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(SpringWebFirstApplication.class, args);
+	}
+
+}
+
+***************************************************************************************************************
+
+package org.akash.app;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
+@Controller
+public class HomeController {
+//	@RequestMapping("/")
+	@GetMapping("/")
+	public String home() {
+		return "index.jsp";
+	}
+	
+	@PostMapping("add")
+	public String add(HttpServletRequest req,HttpSession session) {
+		
+		int num1=Integer.parseInt(req.getParameter("num1"));
+		int num2=Integer.parseInt(req.getParameter("num2"));
+		int result=num1+num2;
+		session.setAttribute("result", result);
+		
+		return "result.jsp";
+	}
+}
+
+****************************************************************************************************************
+
+<%@page language="java" contentType="text/html; charset=UTF-8" %>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Calculator</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+<div class="add">
+    <h2>✨ Simple Addition Calculator ✨</h2>
+
+    <form action="add" method="post">
+        
+        <div class="input-group">
+            <label for="num1">First Number</label>
+            <input type="number" id="num1" name="num1" required>
+        </div>
+
+        <div class="input-group">
+            <label for="num2">Second Number</label>
+            <input type="number" id="num2" name="num2" required>
+        </div>
+
+        <button type="submit">Calculate ➕</button>
+
+    </form>
+</div>
+
+</body>
+</html>
+
+****************************************************************************************************************
+
+<%@page language="java" contentType="text/html; charset=UTF-8" %>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Calculator</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+<div class="add">
+    <h2>✨ Simple Addition Calculator ✨</h2>
+
+    <form action="add" method="post">
+        
+        <div class="input-group">
+            <label for="num1">First Number</label>
+            <input type="number" id="num1" name="num1" required>
+        </div>
+
+        <div class="input-group">
+            <label for="num2">Second Number</label>
+            <input type="number" id="num2" name="num2" required>
+        </div>
+        
+        <button type="submit">Calculate ➕</button>
+        
+        <div class="result-section">
+        	<h3>Result</h3>
+        	<p  id="result-text">
+            	 <%-- <%=session.getAttribute("result")!= null ? session.getAttribute("result") : "" %> --%>
+            	 ${result}
+            	 <!-- jstl ->jsp standard tag library  -->
+        	</p>
+    	</div>
+
+    </form>
+</div>
+
+</body>
+</html>
+
+**************************************************************************************************************
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Background */
+body {
+    height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1f1c2c, #928dab);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Main Card */
+.add {
+    width: 420px;
+    padding: 40px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 25px 40px rgba(0, 0, 0, 0.3);
+    color: white;
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Title */
+.add h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+/* Input Group */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    font-size: 14px;
+    margin-bottom: 6px;
+    display: block;
+    opacity: 0.8;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 16px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.input-group input:focus {
+    box-shadow: 0 0 10px #6c5ce7;
+}
+
+/* Button */
+button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(45deg, #ff6b6b, #f94d6a);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(255, 75, 75, 0.4);
+}
+
+/* Result Section */
+.result-section {
+    margin-top: 30px;
+    padding: 20px;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 114, 255, 0.5);
+    animation: glow 1.5s infinite alternate;
+}
+
+/* Result Glow Effect */
+@keyframes glow {
+    from { box-shadow: 0 0 10px #00c6ff; }
+    to { box-shadow: 0 0 25px #00c6ff; }
+}
+
+.result-section h3 {
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+#result-text {
+    font-size: 26px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* If no result */
+#result-text:empty::before {
+    content: "Your result will appear here ✨";
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+***************************************************************************************************************
+
+spring.application.name=SpringWebFirst
+server.port=4545
+
+***************************************************************************************************************
+
+without HttpServletRequest req object:
+______________________________________
+
+package org.akash.app;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
+@Controller
+public class HomeController {
+//	@RequestMapping("/")
+	@GetMapping("/")
+	public String home() {
+		return "index.jsp";
+	}
+	
+	@PostMapping("add")
+	public String add(int num1,int num2,HttpSession session) {
+		
+		int result=num1+num2;
+		session.setAttribute("result", result);
+		
+		return "result.jsp";
+	}
+}
+
+***************************************************************************************************************
+
+with requestparam :
+___________________
+
+package org.akash.app;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
+@Controller
+public class HomeController {
+//	@RequestMapping("/")
+	@GetMapping("/")
+	public String home() {
+		return "index.jsp";
+	}
+	
+	@PostMapping("add")
+	public String add(@RequestParam("num1") int num,@RequestParam("num2") int numb,HttpSession session) {
+		
+		int result=num+numb;
+		session.setAttribute("result", result);
+		
+		return "result.jsp";
+	}
+}
+
+----------------------------------------------------------------------------------------------
+
+if the name passing in requestParam and the variable name are same then don't need of requestparam name 
+
+package org.akash.app;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
+@Controller
+public class HomeController {
+//	@RequestMapping("/")
+	@GetMapping("/")
+	public String home() {
+		return "index.jsp";
+	}
+	
+	@PostMapping("add")
+	public String add(@RequestParam int num1,@RequestParam int num2,HttpSession session) {
+		
+		int result=num1+num2;
+		session.setAttribute("result", result);
+		
+		return "result.jsp";
+	}
+}
+
+***************************************************************************************************************
+
+without Session session object:
+
+package org.akash.app;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+
+@Controller
+public class HomeController {
+//	@RequestMapping("/")
+	@GetMapping("/")
+	public String home() {
+		return "index.jsp";
+	}
+	
+	@PostMapping("add")
+	public String add(@RequestParam int num1,@RequestParam int num2,Model model) {
+		
+		int result=num1+num2;
+		model.addAttribute("result", result);
+		
+		return "result.jsp";
+	}
+}
+
+***************************************************************************************************************
+
+create a folder name model inside the webapp folder then 
+insert all the jsp page into it 
+and put the css file and insert into the src/main/resources/static folder
+
+then remove the .jsp extension from the HomeController.java file 
+
+and use this prefix and sufix in application properties 
+
+spring.application.name=SpringWebFirst
+server.port=4545
+spring.mvc.view.prefix=model/
+spring.mvc.view.suffix=.jsp
+
+package org.akash.app;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+
+@Controller
+public class HomeController {
+//	@RequestMapping("/")
+	@GetMapping("/")
+	public String home() {
+		return "index";
+	}
+	
+	@PostMapping("add")
+	public String add(@RequestParam int num1,@RequestParam int num2,Model model) {
+		
+		int result=num1+num2;
+		model.addAttribute("result", result);
+		
+		return "result";
+	}
+}
+
+***************************************************************************************************************
+
+using ModelAndView instead of Model:
+
+package org.akash.app;
+
+import org.springframework.stereotype.Controller;
+//import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+
+
+@Controller
+public class HomeController {
+//	@RequestMapping("/")
+	@GetMapping("/")
+	public String home() {
+		return "index";
+	}
+	
+	@PostMapping("add")
+	public ModelAndView add(@RequestParam int num1,@RequestParam int num2,ModelAndView mv) {
+		
+		int result=num1+num2;
+		mv.addObject("result", result);
+		mv.setViewName("result");
+		
+		return mv;
+	}
+}
+
+***************************************************************************************************************
+
+new Project :
+_____________
+
+package org.akash.app;
+
+import org.springframework.stereotype.Controller;
+//import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+
+
+@Controller
+public class HomeController {
+//	@RequestMapping("/")
+	@GetMapping("/")
+	public String home() {
+		return "index";
+	}
+	
+	@PostMapping("add")
+	public ModelAndView add(@RequestParam int num1,@RequestParam int num2,ModelAndView mv) {
+		
+		int result=num1+num2;
+		mv.addObject("result", result);
+		mv.setViewName("result");
+		
+		return mv;
+	}
+	
+	@PostMapping("addAlien")
+	public ModelAndView addAlien(@RequestParam int aid,@RequestParam String aname,ModelAndView mv) {
+		
+		Alien alien=new Alien();
+		alien.setAid(aid);
+		alien.setAname(aname);
+		
+		mv.addObject("alienId", alien.getAid());
+		mv.addObject("alienName", alien.getAname());
+//		System.out.println(alien);
+		mv.setViewName("result");
+		
+		return mv;
+	}
+	
+}
+
+-----------------------------------------------------------------------------------------------
+
+package org.akash.app;
+
+import org.springframework.web.bind.annotation.ModelAttribute;
+
+public class Alien {
+	private int aid;
+	private String aname;
+	@ModelAttribute("alienId")
+	public int getAid() {
+		return aid;
+	}
+	public void setAid(int aid) {
+		this.aid = aid;
+	}
+	@ModelAttribute("alienName")
+	public String getAname() {
+		return aname;
+	}
+	public void setAname(String aname) {
+		this.aname = aname;
+	}
+	@Override
+	public String toString() {
+		return "Alien [aid=" + aid + ", aname=" + aname + "]";
+	}
+	
+}
+
+-----------------------------------------------------------------------------------------------
+
+<%@page language="java" contentType="text/html; charset=UTF-8" %>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>School Student Details</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+<div class="card">
+    <h2>✨ School Student Details ✨</h2>
+
+    <form action="addAlien" method="post">
+        
+        <div class="input-group">
+            <label for="aid">Enter ID</label>
+            <input type="number" id="aid" name="aid" required>
+        </div>
+
+        <div class="input-group">
+            <label for="aname">Enter Name</label>
+            <input type="text" id="aname" name="aname" required>
+        </div>
+
+        <button type="submit">Fetch Details</button>
+
+    </form>
+</div>
+
+</body>
+</html>
+
+----------------------------------------------------------------------------------------------
+
+<%@page language="java" contentType="text/html; charset=UTF-8" %>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Details</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+<div class="card">
+    <h2>✨ Student Details ✨</h2>
+
+    <div class="result-section">
+        <h3>Welcome To WebSchool</h3>
+        <p id="result-text">
+            ID : ${alienId}
+            <br>
+            Name : ${alienName}
+        </p>
+    </div>
+</div>
+
+</body>
+</html>
+
+----------------------------------------------------------------------------------------------
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Background */
+body {
+    height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #141e30, #243b55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Card */
+.card {
+    width: 420px;
+    padding: 40px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 25px 40px rgba(0, 0, 0, 0.4);
+    color: white;
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+/* Fade Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(25px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Heading */
+.card h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+/* Input Group */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    opacity: 0.85;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 16px;
+    transition: 0.3s;
+    outline: none;
+}
+
+.input-group input:focus {
+    box-shadow: 0 0 12px #00f2fe;
+}
+
+/* Button */
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(45deg, #00f2fe, #4facfe);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px rgba(79, 172, 254, 0.5);
+}
+
+/* Result Section */
+.result-section {
+    margin-top: 30px;
+    padding: 25px;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(255, 75, 43, 0.5);
+    animation: glow 1.5s infinite alternate;
+}
+
+/* Glow Animation */
+@keyframes glow {
+    from { box-shadow: 0 0 10px #ff4b2b; }
+    to { box-shadow: 0 0 25px #ff4b2b; }
+}
+
+.result-section h3 {
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+#result-text {
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+***************************************************************************************************************
+
+using @ModelAttribute("name")  :
+________________________________
+
+
+package org.akash.app;
+
+import org.springframework.stereotype.Controller;
+//import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+
+
+@Controller
+public class HomeController {
+//	@RequestMapping("/")
+	@GetMapping("/")
+	public String home() {
+		return "index";
+	}
+	
+	@PostMapping("add")
+	public ModelAndView add(@RequestParam int num1,@RequestParam int num2,ModelAndView mv) {
+		
+		int result=num1+num2;
+		mv.addObject("result", result);
+		mv.setViewName("result");
+		
+		return mv;
+	}
+	
+	@PostMapping("addAlien")
+	public String addAlien(@ModelAttribute Alien alien,ModelAndView mv) {
+		return "result";
+	}
+	
+}
+
+----------------------------------------------------------------------------------------------
+
+<%@page language="java" contentType="text/html; charset=UTF-8" %>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Details</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+<div class="card">
+    <h2>✨ Student Details ✨</h2>
+
+    <div class="result-section">
+        <h3>Welcome To WebSchool</h3>
+        <p id="result-text">
+            <%-- ID : ${alienId}
+            <br>
+            Name : ${alienName} --%>
+            ${alien}
+        </p>
+    </div>
+</div>
+
+</body>
+</html>
+
+----------------------------------------------------------------------------------------------
+
+package org.akash.app;
+
+import org.springframework.web.bind.annotation.ModelAttribute;
+
+public class Alien {
+	private int aid;
+	private String aname;
+	
+//	@ModelAttribute("alienId")
+	public int getAid() {
+		return aid;
+	}
+	public void setAid(int aid) {
+		this.aid = aid;
+	}
+//	@ModelAttribute("alienName")
+	public String getAname() {
+		return aname;
+	}
+	public void setAname(String aname) {
+		this.aname = aname;
+	}
+	@Override
+	public String toString() {
+		return "Alien [aid=" + aid + ", aname=" + aname + "]";
+	}
+	
+}
+
+***********************************************************************
+
+with using thymeleaf without jsp:
+_________________________________
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>4.0.3</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>org.akash</groupId>
+	<artifactId>SpringWebFirst</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>SpringWebFirst</name>
+	<description>Demo Project for Spring</description>
+	<url/>
+	<licenses>
+		<license/>
+	</licenses>
+	<developers>
+		<developer/>
+	</developers>
+	<scm>
+		<connection/>
+		<developerConnection/>
+		<tag/>
+		<url/>
+	</scm>
+	<properties>
+		<java.version>17</java.version>
+	</properties>
+	<dependencies>
+		<dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-web</artifactId>
+     </dependency>
+
+     <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-thymeleaf</artifactId>
+     </dependency>
+
+     <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-test</artifactId>
+         <scope>test</scope>
+     </dependency>
+		
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
+
+----------------------------------------------------------------------------------------------
+
+move all the jsp pages into src/main/resources/templates as html page means change the extension to html from jsp 
+remove the headline <@& > and convert into html page then 
+
+package org.akash.app;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+//import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+
+@Controller
+public class HomeController {
+	@GetMapping("/")
+	public String home() {
+		System.out.println("server working");
+		return "index";
+	}
+	
+//	@GetMapping("/")
+//	@ResponseBody
+//	public String home() {
+//	    return "Hello";
+//	}
+	
+	@ModelAttribute("courseName")
+	public String courseInfo() {
+		return "java";
+	}
+	
+	@PostMapping("add")
+	public ModelAndView add(@RequestParam int num1,@RequestParam int num2,ModelAndView mv) {
+		
+		int result=num1+num2;
+		mv.addObject("result", result);
+		mv.setViewName("result");
+		
+		return mv;
+	}
+	
+	@PostMapping("addAlien")
+	public String addAlien(@ModelAttribute Alien alien,Model model) {
+		model.addAttribute("alien", alien);
+		return "result";
+	}
+	
+}
+
+----------------------------------------------------------------------------------------------
+
+package org.akash.app;
+
+
+public class Alien {
+	private int aid;
+	private String aname;
+	
+//	@ModelAttribute("alienId")
+	public int getAid() {
+		return aid;
+	}
+	public void setAid(int aid) {
+		this.aid = aid;
+	}
+//	@ModelAttribute("alienName")
+	public String getAname() {
+		return aname;
+	}
+	public void setAname(String aname) {
+		this.aname = aname;
+	}
+	@Override
+	public String toString() {
+		return "Alien [aid=" + aid + ", aname=" + aname + "]";
+	}
+	
+}
+
+----------------------------------------------------------------------------------------------
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>School Student Details</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+
+<div class="card">
+    <h2>✨ School Student Details ✨</h2>
+
+    <form th:action="@{/addAlien}" method="post">
+        
+        <div class="input-group">
+            <label for="aid">Enter ID</label>
+            <input type="number" id="aid" name="aid" required>
+        </div>
+
+        <div class="input-group">
+            <label for="aname">Enter Name</label>
+            <input type="text" id="aname" name="aname" required>
+        </div>
+
+        <button type="submit">Fetch Details</button>
+
+    </form>
+</div>
+
+</body>
+</html>
+
+----------------------------------------------------------------------------------------------
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Student Details</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+
+<div class="card">
+    <h2>✨ Student Details ✨</h2>
+
+    <div class="result-section">
+        <h3>Welcome To WebSchool</h3>
+        <p id="result-text" th:text="${alien}" >
+        	${alien}
+        </p>
+        <p th:text="'welcome to the'+${courseName}+'world'">Greeting</p>
+    </div>
+</div>
+
+</body>
+</html>
+
+---------------------------------------------------------------------------------------------
+
+also remove the prefix and sufix declaration in application.xml file 
+
+spring.application.name=SpringWebFirst
+server.port=4545
+
+
+
+
+
+
+

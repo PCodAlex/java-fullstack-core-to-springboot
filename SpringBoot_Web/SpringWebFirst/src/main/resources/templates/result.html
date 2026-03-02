@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Student Details</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+
+<div class="card">
+    <h2>✨ Student Details ✨</h2>
+
+    <div class="result-section">
+        <h3>Welcome To WebSchool</h3>
+        <p id="result-text" th:text="${alien}" >
+        	${alien}
+        </p>
+        <p th:text="'welcome to the'+${courseName}+'world'">Greeting</p>
+    </div>
+</div>
+
+</body>
+</html>
