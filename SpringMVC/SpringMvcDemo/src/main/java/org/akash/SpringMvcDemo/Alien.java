@@ -1,0 +1,27 @@
+package org.akash.SpringMvcDemo;
+
+
+public class Alien {
+	private int aid;
+	private String aname;
+	
+//	@ModelAttribute("alienId")
+	public int getAid() {
+		return aid;
+	}
+	public void setAid(int aid) {
+		this.aid = aid;
+	}
+//	@ModelAttribute("alienName")
+	public String getAname() {
+		return aname;
+	}
+	public void setAname(String aname) {
+		this.aname = aname;
+	}
+	@Override
+	public String toString() {
+		return "Alien [aid=" + aid + ", aname=" + aname + "]";
+	}
+	
+}
