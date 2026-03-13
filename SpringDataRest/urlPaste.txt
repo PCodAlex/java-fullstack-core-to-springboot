@@ -1,0 +1,22 @@
+get -->
+http://localhost:5678/jobPosts
+http://localhost:5678/jobPosts/11[particular data]
+
+post /put[update]-->
+http://localhost:5678/jobPosts
+{
+  "postId":11,
+  "postProfile": "Java Backend Developer",
+  "postDesc": "Develop REST APIs using Spring Boot and PostgreSQL",
+  "reqExperience": 3,
+  "postTechStack": [
+    "Java",
+    "Spring Boot",
+    "Hibernate",
+    "PostgreSQL",
+    "REST API"
+  ]
+}
+
+delete-->
+http://localhost:5678/jobPosts/11[particular data]
